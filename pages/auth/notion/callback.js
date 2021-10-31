@@ -10,7 +10,7 @@ export let getStaticProps = () => {
   };
 };
 
-function notionCallback({ APPLICATION_URL }) {
+function NotionCallback({ APPLICATION_URL }) {
   let router = useRouter();
   const [notionAccessTokenData, setNotionAccessTokenData] = useState({});
   useEffect(async () => {
@@ -34,4 +34,4 @@ function notionCallback({ APPLICATION_URL }) {
   );
 }
 
-export default notionCallback;
+export default NotionCallback;
