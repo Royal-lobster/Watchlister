@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 
-function dashboard() {
+function Dashboard() {
   let router = useRouter();
   const [notionUserCredentials, setNotionUserCredentials] = useState({});
   useEffect(() => {
@@ -28,4 +28,4 @@ function dashboard() {
   );
 }
 
-export default dashboard;
+export default Dashboard;

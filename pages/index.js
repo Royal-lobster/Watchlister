@@ -13,7 +13,7 @@ export let getStaticProps = () => {
   };
 };
 
-function index({ NOTION_OAUTH_CLIENT_TOKEN, APPLICATION_URL }) {
+function Index({ NOTION_OAUTH_CLIENT_TOKEN, APPLICATION_URL }) {
   const router = useRouter();
   let handleConnectClick = () => {
     window.location.href = `https://api.notion.com/v1/oauth/authorize?owner=user&client_id=${NOTION_OAUTH_CLIENT_TOKEN}&response_type=code`;
@@ -68,4 +68,4 @@ function index({ NOTION_OAUTH_CLIENT_TOKEN, APPLICATION_URL }) {
   );
 }
 
-export default index;
+export default Index;
