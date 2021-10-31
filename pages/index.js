@@ -1,6 +1,8 @@
-import React from "react";
-import { Button, Paper } from "@mantine/core";
+import React, { useEffect } from "react";
+import { Button, Paper, ThemeIcon, Notification } from "@mantine/core";
 import { SiNotion } from "react-icons/si";
+import { useRouter } from "next/router";
+import { MdOutlineMovie } from "react-icons/md";
 
 export let getStaticProps = () => {
   return {
@@ -12,14 +14,30 @@ export let getStaticProps = () => {
 };
 
 function index({ NOTION_OAUTH_CLIENT_TOKEN, APPLICATION_URL }) {
+  const router = useRouter();
   let handleConnectClick = () => {
     window.location.href = `https://api.notion.com/v1/oauth/authorize?owner=user&client_id=${NOTION_OAUTH_CLIENT_TOKEN}&response_type=code`;
   };
+  useEffect(() => {
+    console.log(localStorage.getItem("NOTION_USER_CREDENTIALS"));
+    if (localStorage.getItem("NOTION_USER_CREDENTIALS")) {
+      router.push("/dashboard");
+    }
+  }, []);
+
   return (
     <>
       <div className="notionLoginPage">
         <Paper className="notionLoginPage__paper" padding={40} shadow="xs" withBorder>
-          <h1>Notion Watchlister</h1>
+          <div style={{ display: "flex", alignItems: "center", gap: "20px", margin: "0 auto" }}>
+            <ThemeIcon size="lg" variant="gradient" gradient={{ from: "indigo", to: "cyan" }}>
+              <MdOutlineMovie />
+            </ThemeIcon>
+            <h1>Watchlister</h1>
+          </div>
+          <Notification title="Connect with Notion" disallowClose>
+            Press the button below to connect the application with your notion.
+          </Notification>
           <Button
             leftIcon={<SiNotion />}
             variant="gradient"
@@ -35,11 +53,11 @@ function index({ NOTION_OAUTH_CLIENT_TOKEN, APPLICATION_URL }) {
           display: grid;
           place-items: center;
           min-height: 100vh;
-          text-align: center;
           margin: 0 auto;
           padding: 20px;
         }
         .notionLoginPage__paper {
+          max-width: 400px;
           display: flex;
           flex-direction: column;
           gap: 20px;
