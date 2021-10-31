@@ -1,6 +1,7 @@
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { Code } from "@mantine/core";
+import { Prism } from "@mantine/prism";
 
 export let getStaticProps = () => {
   return {
@@ -32,7 +33,7 @@ function NotionCallback({ APPLICATION_URL }) {
 
   return (
     <div style={{ display: "grid", minHeight: "100vh", placeItems: "center" }}>
-      <Code block>{JSON.stringify(notionAccessTokenData, null, 4)}</Code>
+      <Prism language="tsx">{JSON.stringify(notionAccessTokenData, null, 4)}</Prism>
     </div>
   );
 }
