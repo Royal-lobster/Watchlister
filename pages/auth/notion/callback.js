@@ -13,18 +13,21 @@ export let getStaticProps = () => {
 function NotionCallback({ APPLICATION_URL }) {
   let router = useRouter();
   const [notionAccessTokenData, setNotionAccessTokenData] = useState({});
-  useEffect(async () => {
-    const response = await fetch(`${APPLICATION_URL}/api/auth/notion/get-access-token`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        code: router.query.code,
-      }),
-    });
-    const resBody = await response.json();
-    setNotionAccessTokenData(resBody);
+  useEffect(() => {
+    async function fetchNotionAccessToken() {
+      const response = await fetch(`${APPLICATION_URL}/api/auth/notion/get-access-token`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          code: router.query.code,
+        }),
+      });
+      const resBody = await response.json();
+      setNotionAccessTokenData(resBody);
+    }
+    fetchNotionAccessToken();
   }, [router.query.code]);
 
   return (
