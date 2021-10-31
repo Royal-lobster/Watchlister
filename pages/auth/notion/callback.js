@@ -28,7 +28,7 @@ function NotionCallback({ APPLICATION_URL }) {
       setNotionAccessTokenData(resBody);
     }
     fetchNotionAccessToken();
-  }, [router.query.code]);
+  }, [router.query.code, APPLICATION_URL]);
 
   return (
     <div style={{ display: "grid", minHeight: "100vh", placeItems: "center" }}>
