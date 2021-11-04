@@ -15,15 +15,16 @@ export let getStaticProps = () => {
 
 function Index({ NOTION_OAUTH_CLIENT_TOKEN, APPLICATION_URL }) {
   const router = useRouter();
-  let handleConnectClick = () => {
-    window.location.href = `https://api.notion.com/v1/oauth/authorize?owner=user&client_id=${NOTION_OAUTH_CLIENT_TOKEN}&response_type=code`;
-  };
+
   useEffect(() => {
-    console.log(localStorage.getItem("NOTION_USER_CREDENTIALS"));
     if (localStorage.getItem("NOTION_USER_CREDENTIALS")) {
       router.push("/dashboard");
     }
   }, []);
+
+  let handleConnectClick = () => {
+    window.location.href = `https://api.notion.com/v1/oauth/authorize?owner=user&client_id=${NOTION_OAUTH_CLIENT_TOKEN}&response_type=code`;
+  };
 
   return (
     <>
@@ -48,6 +49,7 @@ function Index({ NOTION_OAUTH_CLIENT_TOKEN, APPLICATION_URL }) {
           </Button>
         </Paper>
       </div>
+
       <style jsx global>{`
         .notionLoginPage {
           display: grid;

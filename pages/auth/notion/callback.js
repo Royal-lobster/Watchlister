@@ -27,6 +27,9 @@ function NotionCallback({ APPLICATION_URL }) {
       if (resBody.access_token) {
         localStorage.setItem("NOTION_USER_CREDENTIALS", JSON.stringify(resBody));
         router.push("/");
+      } else {
+        alert("Something went wrong. Please try again.");
+        router.push("/");
       }
     }
     fetchNotionAccessToken();
