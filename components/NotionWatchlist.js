@@ -18,6 +18,7 @@ function NotionWatchlist({ contentData, contentLoading, handlePageDeleteConfirm 
               cover={page.cover.external.url}
               icon={page.icon.external.url}
               id={page.id}
+              genres={page.properties.Tags.multi_select}
               handlePageDeleteConfirm={handlePageDeleteConfirm}
             />
           ))}

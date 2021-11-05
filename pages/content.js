@@ -50,6 +50,11 @@ function Content({ TMDB_API_KEY, APPLICATION_URL }) {
             },
           ],
         },
+        Tags: {
+          multi_select: mediaData.genres.map((genre) => {
+            return { name: genre.name };
+          }),
+        },
       },
       icon: {
         external: { url: `http://image.tmdb.org/t/p/w500${mediaData.poster_path}` },

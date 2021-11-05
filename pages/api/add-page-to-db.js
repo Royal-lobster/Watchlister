@@ -11,6 +11,7 @@ export default function handler(req, res) {
     })
       .then((response) => response.json())
       .then((data) => {
+        console.log(data);
         res.status(200).json(data);
       });
   }
