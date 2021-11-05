@@ -60,7 +60,7 @@ function MyApp({ Component, pageProps }) {
           min-height: 97.5vh;
         }
         #content-wrap {
-          padding-bottom: 30px; /* Footer height */
+          padding-bottom: 50px; /* Footer height */
         }
       `}</style>
     </>

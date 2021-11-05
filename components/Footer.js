@@ -16,6 +16,7 @@ function Footer() {
           justify-content: center;
           align-items: center;
           position: absolute;
+          margin-bottom: 20px;
           bottom: 0;
           width: 100%;
           height: 30px;

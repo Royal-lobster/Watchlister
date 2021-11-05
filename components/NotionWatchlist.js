@@ -39,6 +39,7 @@ function NotionWatchlist({ contentData, contentLoading, handlePageDeleteConfirm 
         .notionWatchlist {
           max-width: 950px;
           margin: 0 auto;
+          margin-bottom: 20px;
           display: flex;
           flex-direction: column;
           gap: 20px;
