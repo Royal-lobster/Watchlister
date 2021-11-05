@@ -26,7 +26,7 @@ function NotionCallback({ APPLICATION_URL }) {
       const resBody = await response.json();
       if (resBody.access_token) {
         localStorage.setItem("NOTION_USER_CREDENTIALS", JSON.stringify(resBody));
-        router.push("/");
+        router.push("/set-watchlist-page");
       } else {
         alert("Something went wrong. Please try again.");
         router.push("/");

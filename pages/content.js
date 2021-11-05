@@ -1,20 +1,26 @@
-import { Button, Chip, Image, Loader, Skeleton } from "@mantine/core";
+import { Button, Chip, Group, Image, Loader, Skeleton } from "@mantine/core";
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
-import { FiPlusCircle } from "react-icons/fi";
+import React, { useContext, useEffect, useState } from "react";
+import { FiArrowLeft, FiPlusCircle } from "react-icons/fi";
 import Navbar from "../components/Navbar";
+import { NotionCredContext } from "../context/NotionCred";
+import { useNotifications } from "@mantine/notifications";
 
 export let getStaticProps = () => {
   return {
     props: {
       TMDB_API_KEY: process.env.TMDB_API_KEY,
+      APPLICATION_URL: process.env.APPLICATION_URL,
     },
   };
 };
 
-function Content({ TMDB_API_KEY }) {
+function Content({ TMDB_API_KEY, APPLICATION_URL }) {
+  const notifications = useNotifications();
   let router = useRouter();
+  let [notionUserCredentials] = useContext(NotionCredContext);
   const [mediaData, setMediaData] = useState({});
+
   useEffect(() => {
     let id = router.query.id;
     let type = router.query.type;
@@ -29,6 +35,77 @@ function Content({ TMDB_API_KEY }) {
     fetchData();
     console.log(mediaData);
   }, [router.query.id, router.query.type]);
+
+  const handleAddToNotionClick = () => {
+    let databaseID = localStorage.getItem("NOTION_WATCHLIST_PAGE_ID");
+    let body_content = {
+      parent: { database_id: databaseID },
+      properties: {
+        Name: {
+          title: [
+            {
+              text: {
+                content: mediaData?.name ? mediaData?.name : mediaData?.title,
+              },
+            },
+          ],
+        },
+      },
+      icon: {
+        external: { url: `http://image.tmdb.org/t/p/w500${mediaData.poster_path}` },
+      },
+      cover: {
+        external: {
+          url: mediaData.backdrop_path
+            ? `http://image.tmdb.org/t/p/w500${mediaData.backdrop_path}`
+            : `http://image.tmdb.org/t/p/w500${mediaData.poster_path}`,
+        },
+      },
+      children: [
+        {
+          object: "block",
+          type: "heading_2",
+          heading_2: {
+            text: [{ type: "text", text: { content: "Description" } }],
+          },
+        },
+        {
+          object: "block",
+          type: "paragraph",
+          paragraph: {
+            text: [
+              {
+                type: "text",
+                text: {
+                  content: mediaData.overview,
+                },
+              },
+            ],
+          },
+        },
+      ],
+    };
+    fetch(`${APPLICATION_URL}/api/add-page-to-db`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        token: notionUserCredentials.access_token,
+        body_content: JSON.stringify(body_content),
+      }),
+    }).then((response) => {
+      response.json().then((data) => {
+        console.log(data);
+      });
+    });
+    notifications.showNotification({
+      title: `Added To Notion`,
+      message: `Added ${mediaData?.name ? mediaData?.name : mediaData?.title} to your page`,
+    });
+    window.location.href = `${APPLICATION_URL}/dashboard`;
+  };
+
   if (mediaData.id) {
     return (
       <>
@@ -50,14 +127,19 @@ function Content({ TMDB_API_KEY }) {
                 </div>
               ))}
             </div>
-            <Button
-              variant="gradient"
-              gradient={{ from: "indigo", to: "cyan" }}
-              style={{ marginTop: "20px" }}
-              leftIcon={<FiPlusCircle />}
-            >
-              Add to Notion
-            </Button>
+            <div className="content__buttonGroup">
+              <Button
+                variant="gradient"
+                gradient={{ from: "indigo", to: "cyan" }}
+                leftIcon={<FiPlusCircle />}
+                onClick={handleAddToNotionClick}
+              >
+                Add to Notion
+              </Button>
+              <Button variant="outline" leftIcon={<FiArrowLeft />} onClick={() => router.push("/dashboard")}>
+                Back to Dashboard
+              </Button>
+            </div>
           </div>
         </div>
 
@@ -92,14 +174,24 @@ function Content({ TMDB_API_KEY }) {
           }
           .content__genres {
             display: flex;
+            flex-wrap: wrap;
             gap: 5px;
             margin: 15px 0;
           }
           .content__genreChip {
+            display: grid;
+            place-items: center;
             background-color: #103250;
             padding: 2px 15px;
             color: white;
             border-radius: 100px;
+          }
+          .content__buttonGroup {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 10px;
+            margin-top: 20px;
           }
           @media only screen and (max-width: 1000px) {
             .content__coverImage {
@@ -122,6 +214,12 @@ function Content({ TMDB_API_KEY }) {
               flex-direction: column;
               align-items: center;
               text-align: center;
+            }
+            .content__genres {
+              justify-content: center;
+            }
+            .content__buttonGroup {
+              justify-content: center;
             }
           }
         `}</style>

@@ -36,8 +36,14 @@ function Index({ NOTION_OAUTH_CLIENT_TOKEN, APPLICATION_URL }) {
             </ThemeIcon>
             <h1>Watchlister</h1>
           </div>
-          <Notification title="Connect with Notion" disallowClose>
-            Press the button below to connect the application with your notion.
+          <Notification title="Step 1" disallowClose>
+            Duplicate{" "}
+            <a href="https://watchlister.notion.site/watchlister/473e1f3d98cf46ba829efbfb0a1692cc">this page</a> to your
+            notion account (skip this if you already have a similar page)
+          </Notification>
+          <Notification title="Step 2" disallowClose>
+            Click on the button below. then search for the page from <b>search box</b> you duplicated before and{" "}
+            <b>only select that one page</b> (not more not less)
           </Notification>
           <Button
             leftIcon={<SiNotion />}
@@ -63,7 +69,7 @@ function Index({ NOTION_OAUTH_CLIENT_TOKEN, APPLICATION_URL }) {
           display: flex;
           flex-direction: column;
           gap: 20px;
-          background-color: #333;
+          background-color: #141414;
         }
       `}</style>
     </>

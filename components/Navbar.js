@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useContext } from "react";
+import { NotionCredContext } from "../context/NotionCred";
 import { useRouter } from "next/router";
 import { Avatar, Text, Menu, UnstyledButton, Group, ThemeIcon } from "@mantine/core";
 import { FiLogOut, FiUser } from "react-icons/fi";
@@ -7,7 +8,7 @@ import { useMediaQuery } from "@mantine/hooks";
 
 function Navbar() {
   let router = useRouter();
-  const [notionUserCredentials, setNotionUserCredentials] = useState({});
+  const [notionUserCredentials, setNotionUserCredentials] = useContext(NotionCredContext);
   useEffect(() => {
     async function getNotionUserCredentials() {
       const storedCredentials = await localStorage.getItem("NOTION_USER_CREDENTIALS");
@@ -21,7 +22,7 @@ function Navbar() {
   }, []);
   const matches = useMediaQuery("(min-width: 500px)");
   let handleLogoutClick = () => {
-    localStorage.removeItem("NOTION_USER_CREDENTIALS");
+    localStorage.clear();
     window.location.replace("/");
   };
   return (
@@ -92,11 +93,15 @@ function Navbar() {
           font-size: 20px;
           font-weight: bold;
         }
+        .navbar__userAvatar {
+          background-color: #444;
+          border-radius: 4px;
+          overflow: hidden;
+        }
         .navbar__userAvatar img {
           display: unset !important;
           width: 40px;
           height: 40px;
-          border-radius: 4px;
         }
         .navbar__userDetails {
           display: flex;

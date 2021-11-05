@@ -14,7 +14,7 @@ function SearchSuggestion({ name, mediaType, posterPath, id }) {
           <Avatar src={`http://image.tmdb.org/t/p/w500/${posterPath}`} alt="" height={30}>
             <MdOutlineMovie />
           </Avatar>
-          <p>{name}</p>
+          <p style={{ textAlign: "left" }}>{name}</p>
         </div>
         <ThemeIcon
           variant="gradient"
@@ -41,6 +41,7 @@ function SearchSuggestion({ name, mediaType, posterPath, id }) {
         .searchSuggestion__mediaType {
           width: unset !important;
           padding: 0 5px;
+          flex-shrink: 0;
         }
       `}</style>
     </>
