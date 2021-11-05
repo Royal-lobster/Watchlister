@@ -57,7 +57,7 @@ function MyApp({ Component, pageProps }) {
       <style jsx global>{`
         #page-container {
           position: relative;
-          min-height: 97.5vh;
+          min-height: 100vh;
         }
         #content-wrap {
           padding-bottom: 50px; /* Footer height */

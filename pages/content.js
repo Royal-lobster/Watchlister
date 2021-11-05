@@ -142,7 +142,9 @@ function Content({ TMDB_API_KEY, APPLICATION_URL }) {
             <h1>{mediaData?.name ? mediaData?.name : mediaData?.title}</h1>
             <Skeleton visible={!mediaData} height={8} mt={6} radius="xl" />
             {mediaData?.tagline && (
-              <Blockquote cite={mediaData?.name ? mediaData?.name : mediaData?.title}>{mediaData?.tagline}</Blockquote>
+              <Blockquote className="content__blockquote" cite={mediaData?.name ? mediaData?.name : mediaData?.title}>
+                {mediaData?.tagline}
+              </Blockquote>
             )}
             <p>{mediaData.overview}</p>
             <div className="content__genres">
@@ -240,6 +242,9 @@ function Content({ TMDB_API_KEY, APPLICATION_URL }) {
               flex-direction: column;
               align-items: center;
               text-align: center;
+            }
+            .content__blockquote {
+              text-align: left;
             }
             .content__genres {
               justify-content: center;
