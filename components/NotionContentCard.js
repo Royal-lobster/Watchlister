@@ -6,7 +6,7 @@ import { SiNotion } from "react-icons/si";
 function NotionContentCard({ title, cover, icon, id, genres, handlePageDeleteConfirm }) {
   return (
     <>
-      <Card className="notionContentCard" shadow="sm" padding="lg">
+      <Card className="notionContentCard" shadow="lg" padding="lg">
         <Card.Section>
           <Image src={cover} alt={title + "cover"} height={110} withPlaceholder />
         </Card.Section>
@@ -20,7 +20,9 @@ function NotionContentCard({ title, cover, icon, id, genres, handlePageDeleteCon
         </div>
         <div className="notionContentCard__genres">
           {genres.map((genre) => (
-            <Badge variant="dot">{genre.name}</Badge>
+            <Badge key={genre.id} color={genre.color} variant="dot">
+              {genre.name}
+            </Badge>
           ))}
         </div>
         <Group grow style={{ marginTop: "auto" }}>
@@ -55,6 +57,7 @@ function NotionContentCard({ title, cover, icon, id, genres, handlePageDeleteCon
             margin: 0 auto;
             display: flex;
             flex-direction: column;
+            border-radius: 0;
           }
           .notionContentCardTitleIconWrapper {
             display: flex;

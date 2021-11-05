@@ -33,7 +33,7 @@ function NotionCallback({ APPLICATION_URL }) {
       }
     }
     fetchNotionAccessToken();
-  }, [router.query.code, APPLICATION_URL]);
+  }, [router, APPLICATION_URL]);
 
   return (
     <div style={{ paddingTop: "40vh", display: "grid", placeItems: "center" }}>

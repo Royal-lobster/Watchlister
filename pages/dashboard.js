@@ -31,7 +31,7 @@ function Dashboard({ TMDB_API_KEY, APPLICATION_URL }) {
     if (localStorage.getItem("NOTION_WATCHLIST_PAGE_ID") == null) {
       router.push("/set-watchlist-page");
     }
-  }, []);
+  }, [router]);
 
   useEffect(() => {
     setContentLoading(true);

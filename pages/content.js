@@ -33,7 +33,6 @@ function Content({ TMDB_API_KEY, APPLICATION_URL }) {
       setMediaData(data);
     }
     fetchData();
-    console.log(mediaData);
   }, [router.query.id, router.query.type]);
 
   const handleAddToNotionClick = () => {
@@ -117,7 +116,11 @@ function Content({ TMDB_API_KEY, APPLICATION_URL }) {
         <Navbar />
         <div className="content">
           {mediaData.poster_path ? (
-            <img className="content__coverImage" src={`http://image.tmdb.org/t/p/w500${mediaData.poster_path}`} />
+            <Image
+              className="content__coverImage"
+              alt={`${mediaData.title} cover`}
+              src={`http://image.tmdb.org/t/p/w500${mediaData.poster_path}`}
+            />
           ) : (
             <div className="content__coverImage" />
           )}

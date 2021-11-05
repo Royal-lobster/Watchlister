@@ -19,7 +19,7 @@ function Navbar() {
       }
     }
     getNotionUserCredentials();
-  }, []);
+  }, [router, setNotionUserCredentials]);
   const matches = useMediaQuery("(min-width: 500px)");
   let handleLogoutClick = () => {
     localStorage.clear();

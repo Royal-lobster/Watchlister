@@ -9,8 +9,9 @@ function NotionWatchlist({ contentData, contentLoading, handlePageDeleteConfirm 
         <div className="notionWatchlist__watching"></div>
         <div className="notionWatchlist__toWatch"></div>
         <div className="notionWatchlist__watched">
-          {contentLoading && Array.from(Array(9)).map((e, i) => <Skeleton key={i} height={270} radius="sm" />)}
-          {contentData.map((page) => (
+          {contentLoading &&
+            Array.from(Array(9)).map((e, i) => <Skeleton key={i} height={270} shadow="lg" radius={0} />)}
+          {contentData?.map((page) => (
             <NotionContentCard
               className="notionWatchlist__item"
               key={page.id}
@@ -22,7 +23,7 @@ function NotionWatchlist({ contentData, contentLoading, handlePageDeleteConfirm 
               handlePageDeleteConfirm={handlePageDeleteConfirm}
             />
           ))}
-          {contentData.length === 0 && (
+          {contentData?.length === 0 && (
             <Paper shadow="xs" style={{ textAlign: "center", backgroundColor: "#141414", padding: "40px" }}>
               <Text size="xl" weight={700} variant="gradient" gradient={{ from: "indigo", to: "cyan", deg: 45 }}>
                 Your watchlist is super fresh !

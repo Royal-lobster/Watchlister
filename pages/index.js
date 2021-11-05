@@ -20,7 +20,7 @@ function Index({ NOTION_OAUTH_CLIENT_TOKEN, APPLICATION_URL }) {
     if (localStorage.getItem("NOTION_USER_CREDENTIALS")) {
       router.push("/dashboard");
     }
-  }, []);
+  }, [router]);
 
   let handleConnectClick = () => {
     window.location.href = `https://api.notion.com/v1/oauth/authorize?owner=user&client_id=${NOTION_OAUTH_CLIENT_TOKEN}&response_type=code`;
