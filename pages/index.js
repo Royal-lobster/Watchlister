@@ -60,7 +60,6 @@ function Index({ NOTION_OAUTH_CLIENT_TOKEN, APPLICATION_URL }) {
         .notionLoginPage {
           display: grid;
           place-items: center;
-          min-height: 100vh;
           margin: 0 auto;
           padding: 20px;
         }
