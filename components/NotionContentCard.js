@@ -20,10 +20,9 @@ function NotionContentCard({ title, cover, icon, id, handlePageDeleteConfirm }) 
         </div>
         <Group grow style={{ marginTop: "auto" }}>
           <Button
-            compact
             leftIcon={<SiNotion />}
-            style={{ fontSize: "12px" }}
             variant="light"
+            style={{ padding: 0, height: "32px" }}
             color="blue"
             onClick={() => {
               window.location.href = `https://www.notion.so/${id.replace(/-/g, "")}`;
@@ -32,10 +31,9 @@ function NotionContentCard({ title, cover, icon, id, handlePageDeleteConfirm }) 
             View
           </Button>
           <Button
-            compact
             variant="light"
-            style={{ fontSize: "12px" }}
             color="red"
+            style={{ padding: 0, height: "32px" }}
             leftIcon={<FiTrash2 />}
             onClick={() => {
               console.log("clicked");
@@ -58,6 +56,11 @@ function NotionContentCard({ title, cover, icon, id, handlePageDeleteConfirm }) 
             align-items: center;
             gap: 10px;
             margin: 10px 0;
+          }
+          @media only screen and (max-width: 400px) {
+            .notionContentCard {
+              width: 100%;
+            }
           }
         `}
       </style>

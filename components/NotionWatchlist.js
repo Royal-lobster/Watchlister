@@ -40,12 +40,17 @@ function NotionWatchlist({ contentData, contentLoading, handlePageDeleteConfirm 
           display: flex;
           flex-direction: column;
           gap: 20px;
-          padding: 0px 20px 20px 20px;
         }
         .notionWatchlist div {
           display: grid;
           grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
           grid-gap: 20px;
+        }
+        @media only screen and (max-width: 400px) {
+          .notionWatchlist div {
+            display: flex;
+            flex-direction: column;
+          }
         }
       `}</style>
     </>
