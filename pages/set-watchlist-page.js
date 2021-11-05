@@ -153,7 +153,7 @@ function SetWatchlistPage({ APPLICATION_URL }) {
             Cancel
           </Button>
           <Button onClick={handlePageConfirmation} color="green" leftIcon={<FiSave />}>
-            Yes I'm sure
+            Yes I&apos;m sure
           </Button>
         </Group>
       </Modal>
