@@ -1,4 +1,4 @@
-import { Button, Chip, Group, Image, Loader, Skeleton } from "@mantine/core";
+import { Blockquote, Button, Chip, Group, Image, Loader, Skeleton } from "@mantine/core";
 import { useRouter } from "next/router";
 import React, { useContext, useEffect, useState } from "react";
 import { FiArrowLeft, FiPlusCircle } from "react-icons/fi";
@@ -87,6 +87,20 @@ function Content({ TMDB_API_KEY, APPLICATION_URL }) {
             ],
           },
         },
+        {
+          object: "block",
+          type: "quote",
+          quote: {
+            text: [
+              {
+                type: "text",
+                text: {
+                  content: mediaData.tagline,
+                },
+              },
+            ],
+          },
+        },
       ],
     };
     fetch(`${APPLICATION_URL}/api/add-page-to-db`, {
@@ -127,6 +141,9 @@ function Content({ TMDB_API_KEY, APPLICATION_URL }) {
           <div className="content__textDetails">
             <h1>{mediaData?.name ? mediaData?.name : mediaData?.title}</h1>
             <Skeleton visible={!mediaData} height={8} mt={6} radius="xl" />
+            {mediaData?.tagline && (
+              <Blockquote cite={mediaData?.name ? mediaData?.name : mediaData?.title}>{mediaData?.tagline}</Blockquote>
+            )}
             <p>{mediaData.overview}</p>
             <div className="content__genres">
               {mediaData.genres?.map((genre) => (
@@ -166,8 +183,9 @@ function Content({ TMDB_API_KEY, APPLICATION_URL }) {
             background-color: #565656;
             height: 340px;
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'%3E%3Cg fill='%23818181' fill-opacity='0.4'%3E%3Cpath d='M12 0h18v6h6v6h6v18h-6v6h-6v6H12v-6H6v-6H0V12h6V6h6V0zm12 6h-6v6h-6v6H6v6h6v6h6v6h6v-6h6v-6h6v-6h-6v-6h-6V6zm-6 12h6v6h-6v-6zm24 24h6v6h-6v-6z'%3E%3C/path%3E%3C/g%3E%3C/svg%3E");
-            border-radius: 6px;
-            overflow: hidden;
+            box-shadow: 2.8px 2.8px 2.2px rgba(0, 0, 0, 0.02), 6.7px 6.7px 5.3px rgba(0, 0, 0, 0.028),
+              12.5px 12.5px 10px rgba(0, 0, 0, 0.035), 22.3px 22.3px 17.9px rgba(0, 0, 0, 0.042),
+              41.8px 41.8px 33.4px rgba(0, 0, 0, 0.05), 100px 100px 80px rgba(0, 0, 0, 0.07);
           }
           .content__coverImage img {
             height: 100%;
@@ -199,7 +217,7 @@ function Content({ TMDB_API_KEY, APPLICATION_URL }) {
             flex-wrap: wrap;
             align-items: center;
             gap: 10px;
-            margin-top: 20px;
+            margin: 20px 0;
           }
           @media only screen and (max-width: 1000px) {
             .content__coverImage {

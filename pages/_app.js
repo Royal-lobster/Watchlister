@@ -3,6 +3,7 @@ import { MantineProvider, NormalizeCSS, GlobalStyles } from "@mantine/core";
 import { NotionCredProvider } from "../context/NotionCred";
 import { NotificationsProvider } from "@mantine/notifications";
 import Head from "next/head";
+import Footer from "../components/Footer";
 
 function MyApp({ Component, pageProps }) {
   return (
@@ -43,10 +44,25 @@ function MyApp({ Component, pageProps }) {
         <GlobalStyles />
         <NotificationsProvider>
           <NotionCredProvider>
-            <Component {...pageProps} />
+            <div id="page-container">
+              <div id="content-wrap">
+                <Component {...pageProps} />
+              </div>
+              <Footer />
+            </div>
           </NotionCredProvider>
         </NotificationsProvider>
       </MantineProvider>
+
+      <style jsx global>{`
+        #page-container {
+          position: relative;
+          min-height: 97.5vh;
+        }
+        #content-wrap {
+          padding-bottom: 30px; /* Footer height */
+        }
+      `}</style>
     </>
   );
 }
