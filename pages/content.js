@@ -121,7 +121,7 @@ function Content({ TMDB_API_KEY, APPLICATION_URL }) {
       title: `Added To Notion`,
       message: `Added ${mediaData?.name ? mediaData?.name : mediaData?.title} to your page`,
     });
-    window.location.href = `${APPLICATION_URL}/dashboard`;
+    window.location.replace(`${APPLICATION_URL}/dashboard`);
   };
 
   if (mediaData.id) {
