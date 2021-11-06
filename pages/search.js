@@ -1,4 +1,4 @@
-import { Avatar, Badge, Button, Image, Skeleton, ThemeIcon } from "@mantine/core";
+import { Avatar, Badge, Button, Image, Paper, Skeleton, Text, ThemeIcon } from "@mantine/core";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { FiArrowLeft } from "react-icons/fi";
@@ -81,6 +81,19 @@ function Search({ TMDB_API_KEY }) {
             </div>
           </div>
         ))}
+        {searchData.length === 0 && (
+          <Paper
+            shadow="xs"
+            style={{ textAlign: "center", backgroundColor: "#141414", padding: "40px", margin: "20px 0" }}
+          >
+            <Text size="xl" weight={700} variant="gradient" gradient={{ from: "red", to: "tomato", deg: 45 }}>
+              No Results Found
+            </Text>
+            <Text size="md" style={{ maxWidth: "300px", margin: "10px auto" }}>
+              No More results found for your search. please go back and try to search again.
+            </Text>
+          </Paper>
+        )}
         <Pagination style={{ justifyContent: "center" }} total={10} page={activePage} onChange={setPage} />
       </div>
       <style jsx global>{`
