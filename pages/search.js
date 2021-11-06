@@ -59,7 +59,7 @@ function Search({ TMDB_API_KEY }) {
             <Skeleton key={i} height={150} style={{ margin: "10px 0" }} shadow="lg" radius={8} />
           ))}
         {searchData.map((result) => (
-          <div
+          <button
             key={result.id}
             className="search__result"
             onClick={() => {
@@ -79,7 +79,7 @@ function Search({ TMDB_API_KEY }) {
                 {result.media_type == "tv" ? "tv" : "movie"}
               </Badge>
             </div>
-          </div>
+          </button>
         ))}
         {searchData.length === 0 && (
           <Paper
@@ -106,6 +106,10 @@ function Search({ TMDB_API_KEY }) {
           margin-bottom: 20px;
         }
         .search__result {
+          border: 0;
+          width: 100%;
+          text-align: unset;
+          font-family: inherit;
           display: flex;
           align-items: center;
           gap: 30px;
@@ -116,7 +120,7 @@ function Search({ TMDB_API_KEY }) {
           margin: 20px 0;
         }
         .search__resultOverview {
-          margin: 5px 0;
+          margin: 10px 0;
         }
         .search__mediaType {
           width: unset !important;

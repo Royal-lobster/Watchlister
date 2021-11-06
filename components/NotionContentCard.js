@@ -43,7 +43,6 @@ function NotionContentCard({ title, cover, icon, id, genres, handlePageDeleteCon
             style={{ padding: 0, height: "32px" }}
             leftIcon={<FiTrash2 />}
             onClick={() => {
-              console.log("clicked");
               handlePageDeleteConfirm(id);
             }}
           >

@@ -12,7 +12,6 @@ function MovieSearchBar({ TMDB_API_KEY }) {
   const [debouncedSearchTerm] = useDebouncedValue(searchTerm, 200, { leading: true });
 
   useEffect(() => {
-    console.log(debouncedSearchTerm);
     if (debouncedSearchTerm.length > 1) {
       fetchData();
     }
