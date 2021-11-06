@@ -15,7 +15,7 @@ export let getStaticProps = () => {
   };
 };
 
-function search({ TMDB_API_KEY }) {
+function Search({ TMDB_API_KEY }) {
   let router = useRouter();
   const [searchData, setSearchData] = useState([]);
   const [activePage, setPage] = useState(router.query.p);
@@ -123,4 +123,4 @@ function search({ TMDB_API_KEY }) {
   );
 }
 
-export default search;
+export default Search;
