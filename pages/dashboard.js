@@ -1,11 +1,11 @@
 import React, { useContext, useState, useEffect } from "react";
-import { Button, Group, Input, Modal, Notification, Text } from "@mantine/core";
-import { FiSearch, FiTrash2, FiX } from "react-icons/fi";
+import { Button, Group, Modal, Notification } from "@mantine/core";
+import { FiTrash2, FiX } from "react-icons/fi";
 import Navbar from "../components/Navbar";
-import SearchSuggestion from "../components/SearchSuggestion";
 import { NotionCredContext } from "../context/NotionCred";
 import NotionWatchlist from "../components/NotionWatchlist";
 import { useRouter } from "next/router";
+import MovieSearchBar from "../components/MovieSearchBar";
 
 export let getStaticProps = () => {
   return {
@@ -18,8 +18,6 @@ export let getStaticProps = () => {
 
 function Dashboard({ TMDB_API_KEY, APPLICATION_URL }) {
   let router = useRouter();
-  const [searchTerm, setSearchTerm] = useState("");
-  const [searchData, setSearchData] = useState([]);
   const [contentData, setContentData] = useState([]);
   const [contentLoading, setContentLoading] = useState(true);
   const [pageDeleteLoading, setPageDeleteLoading] = useState(false);
@@ -54,14 +52,6 @@ function Dashboard({ TMDB_API_KEY, APPLICATION_URL }) {
     });
   }, [notionUserCredentials, APPLICATION_URL]);
 
-  let handleAutoCompleteSearch = async (value) => {
-    setSearchTerm(value);
-    let url = `https://api.themoviedb.org/3/search/multi?api_key=${TMDB_API_KEY}&query=${searchTerm}&page=1`;
-    let response = await fetch(url);
-    let { results } = await response.json();
-    setSearchData(results?.filter((result) => result.media_type === "movie" || result.media_type === "tv").slice(0, 5));
-  };
-
   let handlePageDeleteConfirm = (page_id) => {
     setPageToDelete(page_id);
     setOpenedDeletePopup(true);
@@ -90,28 +80,7 @@ function Dashboard({ TMDB_API_KEY, APPLICATION_URL }) {
     <>
       <Navbar />
       <div className="dashboard">
-        <div className="dashboard__autoCompleteSearch">
-          <Input
-            className="dashboard__search"
-            icon={<FiSearch />}
-            placeholder="Search for movie/tv/anime"
-            value={searchTerm}
-            onChange={(e) => handleAutoCompleteSearch(e.target.value)}
-          />
-          <div className="dashboard__searchSuggestions">
-            {searchData?.length > 0 &&
-              searchTerm.length > 0 &&
-              searchData.map((data) => (
-                <SearchSuggestion
-                  key={data.id}
-                  name={data.name ? data.name : data.title}
-                  id={data.id}
-                  mediaType={data.media_type}
-                  posterPath={data.poster_path}
-                />
-              ))}
-          </div>
-        </div>
+        <MovieSearchBar TMDB_API_KEY={TMDB_API_KEY} />
         <NotionWatchlist
           contentData={contentData}
           contentLoading={contentLoading}
@@ -142,25 +111,6 @@ function Dashboard({ TMDB_API_KEY, APPLICATION_URL }) {
           max-width: 1200px;
           margin: 0 auto;
           padding: 20px;
-        }
-        .dashboard__autoCompleteSearch {
-          position: relative;
-          margin-top: 20px;
-        }
-        .dashboard__search {
-          max-width: 600px;
-          margin: 0 auto;
-        }
-        .dashboard__searchSuggestions {
-          position: absolute;
-          background-color: #2c2e33;
-          border-radius: 4px;
-          z-index: 30;
-          top: 40px;
-          left: 0;
-          right: 0;
-          max-width: 600px;
-          margin: 0 auto;
         }
       `}</style>
     </>
