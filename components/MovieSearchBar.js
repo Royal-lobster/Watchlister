@@ -3,8 +3,10 @@ import SearchSuggestion from "./SearchSuggestion";
 import { useDebouncedValue } from "@mantine/hooks";
 import { Input } from "@mantine/core";
 import { FiSearch } from "react-icons/fi";
+import { useRouter } from "next/router";
 
 function MovieSearchBar({ TMDB_API_KEY }) {
+  let router = useRouter();
   const [searchTerm, setSearchTerm] = useState("");
   const [searchData, setSearchData] = useState([]);
   const [debouncedSearchTerm] = useDebouncedValue(searchTerm, 200, { leading: true });
@@ -26,7 +28,15 @@ function MovieSearchBar({ TMDB_API_KEY }) {
 
   return (
     <>
-      <div className="dashboard__autoCompleteSearch">
+      <form
+        className="dashboard__autoCompleteSearch"
+        onSubmit={(e) => {
+          e.preventDefault();
+          if (searchTerm.length > 1) {
+            router.push(`/search?q=${searchTerm}&p=1`);
+          }
+        }}
+      >
         <Input
           className="dashboard__search"
           icon={<FiSearch />}
@@ -47,7 +57,7 @@ function MovieSearchBar({ TMDB_API_KEY }) {
               />
             ))}
         </div>
-      </div>
+      </form>
 
       <style jsx global>{`
         .dashboard__autoCompleteSearch {
