@@ -14,9 +14,9 @@ Manage your Notion Watchlist with ease ! Watchlister automatically fills Movie/T
 ## Installation
 
 ```bash
-git clone https://github.com/Royal-lobster/watchlister-nextjs
+git clone https://github.com/Royal-lobster/watchlister
 
-cd watchlister-nextjs
+cd watchlister
 
  npm install
 ```
