@@ -52,6 +52,7 @@ function Content({ APPLICATION_URL, TMDB_API_KEY, COUNTRY_CODE }) {
           `https://api.themoviedb.org/3/${type}/${id}/watch/providers?api_key=${TMDB_API_KEY}`
         );
         let data = await providerRes.json();
+        console.log("GLOBAL PROVIDER DATA", data);
 
         // FILTER PROVIDERS DATA BY USER COUNTRY CODE
         let providers = data.results[COUNTRY_CODE];
@@ -309,6 +310,7 @@ function Content({ APPLICATION_URL, TMDB_API_KEY, COUNTRY_CODE }) {
           }
           .content__watchProviders h2 {
             flex: 1;
+            min-width: 130px;
             display: flex;
             align-items: center;
             gap: 10px;
