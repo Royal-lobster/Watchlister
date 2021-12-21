@@ -55,7 +55,9 @@ function Content({ APPLICATION_URL, TMDB_API_KEY, COUNTRY_CODE }) {
         console.log("GLOBAL PROVIDER DATA", data);
 
         // FILTER PROVIDERS DATA BY USER COUNTRY CODE
-        let providers = data.results[COUNTRY_CODE];
+        let providers = data.results[COUNTRY_CODE]
+          ? data.results[COUNTRY_CODE]
+          : data.results["US"];
         console.log("PROVIDERS", providers);
         setWatchProviders(providers);
       }
