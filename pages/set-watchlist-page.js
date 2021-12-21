@@ -1,4 +1,14 @@
-import { Avatar, Button, Input, LoadingOverlay, Notification, Paper, Text, Modal, Group } from "@mantine/core";
+import {
+  Avatar,
+  Button,
+  Input,
+  LoadingOverlay,
+  Notification,
+  Paper,
+  Text,
+  Modal,
+  Group,
+} from "@mantine/core";
 import React, { useContext, useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import { FiSave, FiSearch, FiTool, FiX } from "react-icons/fi";
@@ -18,7 +28,8 @@ function SetWatchlistPage({ APPLICATION_URL }) {
   const notifications = useNotifications();
   const [search, setSearch] = useState("");
   const [openedConfirmPopup, setOpenedConfirmPopup] = useState(false);
-  const [openedAddPropertiesPopup, setOpenedAddPropertiesPopup] = useState(false);
+  const [openedAddPropertiesPopup, setOpenedAddPropertiesPopup] =
+    useState(false);
   const [searchLoading, setSearchLoading] = useState(false);
   const [propertiesToAdd, setPropertiesToAdd] = useState([]);
   let [notionUserCredentials] = useContext(NotionCredContext);
@@ -46,7 +57,9 @@ function SetWatchlistPage({ APPLICATION_URL }) {
     });
 
     let data = await response.json();
-    let onlyDatabaseResults = data.results.filter((page) => page.title != undefined);
+    let onlyDatabaseResults = data.results.filter(
+      (page) => page.title != undefined
+    );
     await setSearchPagesData(onlyDatabaseResults);
     if (data.results.length != 0 && onlyDatabaseResults.length === 0) {
       notifications.showNotification({
@@ -69,8 +82,12 @@ function SetWatchlistPage({ APPLICATION_URL }) {
     setSearchLoading(false);
   };
   let handlePageConfirmation = () => {
-    const selectedPageProperties = Object.keys(searchPagesData.filter((page) => page.id == pageToSelect)[0].properties);
-    const pagePropertiesToAdd = ["Tags"].filter((x) => !selectedPageProperties.includes(x));
+    const selectedPageProperties = Object.keys(
+      searchPagesData.filter((page) => page.id == pageToSelect)[0].properties
+    );
+    const pagePropertiesToAdd = ["Tags"].filter(
+      (x) => !selectedPageProperties.includes(x)
+    );
     setOpenedConfirmPopup(false);
     if (pagePropertiesToAdd.length != 0) {
       setPropertiesToAdd(pagePropertiesToAdd);
@@ -79,7 +96,8 @@ function SetWatchlistPage({ APPLICATION_URL }) {
       localStorage.setItem("NOTION_WATCHLIST_PAGE_ID", pageToSelect);
       notifications.showNotification({
         title: "Page selected",
-        message: "your watchlist page is saved to your browser so you dont have to do this step again",
+        message:
+          "your watchlist page is saved to your browser so you dont have to do this step again",
       });
       window.location.href = `${APPLICATION_URL}/dashboard`;
     }
@@ -112,7 +130,8 @@ function SetWatchlistPage({ APPLICATION_URL }) {
       localStorage.setItem("NOTION_WATCHLIST_PAGE_ID", pageToSelect);
       notifications.showNotification({
         title: "Added Properties and Page selected",
-        message: "your watchlist page is saved to your browser so you dont have to do this step again",
+        message:
+          "your watchlist page is saved to your browser so you dont have to do this step again",
       });
       window.location.href = `${APPLICATION_URL}/dashboard`;
     } else {
@@ -131,7 +150,8 @@ function SetWatchlistPage({ APPLICATION_URL }) {
               🔗 Confirm Watchlist Page
             </Text>
             <Notification style={{ marginTop: "10px" }} disallowClose>
-              Search for the title of the page you duplicated before and allowed this application to access it.
+              Search for the title of the page you duplicated before and allowed
+              this application to access it.
             </Notification>
             <form onSubmit={handleSetWatchlistPageSearchSubmit}>
               <Input
@@ -188,11 +208,22 @@ function SetWatchlistPage({ APPLICATION_URL }) {
         </Paper>
       </div>
 
-      <Modal opened={openedConfirmPopup} onClose={() => setOpenedConfirmPopup(false)} title="Confirm page link">
+      <Modal
+        opened={openedConfirmPopup}
+        onClose={() => setOpenedConfirmPopup(false)}
+        title="Confirm page link"
+      >
         <Notification color="blue" title="" disallowClose>
           Are you sure this is the correct page ?
         </Notification>
-        <Group style={{ marginTop: "10px", marginLeft: "auto", width: "100%", justifyContent: "right" }}>
+        <Group
+          style={{
+            marginTop: "10px",
+            marginLeft: "auto",
+            width: "100%",
+            justifyContent: "right",
+          }}
+        >
           <Button
             onClick={() => {
               setPageToSelect("");
@@ -202,7 +233,11 @@ function SetWatchlistPage({ APPLICATION_URL }) {
           >
             Cancel
           </Button>
-          <Button onClick={handlePageConfirmation} color="green" leftIcon={<FiSave />}>
+          <Button
+            onClick={handlePageConfirmation}
+            color="green"
+            leftIcon={<FiSave />}
+          >
             Yes I&apos;m sure
           </Button>
         </Group>
@@ -213,11 +248,28 @@ function SetWatchlistPage({ APPLICATION_URL }) {
         onClose={() => setOpenedAddPropertiesPopup(false)}
         title="Found Missing Properties"
       >
-        <Notification loading={searchLoading} color="orange" title="" disallowClose>
-          The properties {propertiesToAdd.join()} are missing from the page database. Shall I add them ?
+        <Notification
+          loading={searchLoading}
+          color="orange"
+          title=""
+          disallowClose
+        >
+          The properties {propertiesToAdd.join()} are missing from the page
+          database. Shall I add them ?
         </Notification>
-        <Group style={{ marginTop: "10px", marginLeft: "auto", width: "100%", justifyContent: "right" }}>
-          <Button color="green" leftIcon={<FiTool />} onClick={handleMissingPropertiesAdd}>
+        <Group
+          style={{
+            marginTop: "10px",
+            marginLeft: "auto",
+            width: "100%",
+            justifyContent: "right",
+          }}
+        >
+          <Button
+            color="green"
+            leftIcon={<FiTool />}
+            onClick={handleMissingPropertiesAdd}
+          >
             Ok, Add them
           </Button>
         </Group>

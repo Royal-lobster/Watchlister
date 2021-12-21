@@ -1,17 +1,27 @@
 import React, { useEffect, useContext } from "react";
 import { NotionCredContext } from "../context/NotionCred";
 import { useRouter } from "next/router";
-import { Avatar, Text, Menu, UnstyledButton, Group, ThemeIcon } from "@mantine/core";
-import { FiLogOut, FiUser } from "react-icons/fi";
+import {
+  Avatar,
+  Text,
+  Menu,
+  UnstyledButton,
+  Group,
+  ThemeIcon,
+} from "@mantine/core";
+import { FiLogOut, FiSettings, FiUser } from "react-icons/fi";
 import { MdOutlineMovie } from "react-icons/md";
 import { useMediaQuery } from "@mantine/hooks";
 
 function Navbar() {
   let router = useRouter();
-  const [notionUserCredentials, setNotionUserCredentials] = useContext(NotionCredContext);
+  const [notionUserCredentials, setNotionUserCredentials] =
+    useContext(NotionCredContext);
   useEffect(() => {
     async function getNotionUserCredentials() {
-      const storedCredentials = await localStorage.getItem("NOTION_USER_CREDENTIALS");
+      const storedCredentials = await localStorage.getItem(
+        "NOTION_USER_CREDENTIALS"
+      );
       if (storedCredentials) {
         setNotionUserCredentials(JSON.parse(storedCredentials));
       } else {
@@ -30,7 +40,10 @@ function Navbar() {
       <nav>
         <div className="navbar">
           <div className="navbar__branding" onClick={() => router.push("/")}>
-            <ThemeIcon variant="gradient" gradient={{ from: "indigo", to: "cyan" }}>
+            <ThemeIcon
+              variant="gradient"
+              gradient={{ from: "indigo", to: "cyan" }}
+            >
               <MdOutlineMovie />
             </ThemeIcon>
             Watchlister
@@ -55,7 +68,9 @@ function Navbar() {
                     </Avatar>
                     {matches && (
                       <div>
-                        <Text weight={600}>{notionUserCredentials?.owner?.user?.name}</Text>
+                        <Text weight={600}>
+                          {notionUserCredentials?.owner?.user?.name}
+                        </Text>
                         <Text size="xs" color="gray">
                           {notionUserCredentials?.owner?.user?.person?.email}
                         </Text>
@@ -65,6 +80,12 @@ function Navbar() {
                 </UnstyledButton>
               }
             >
+              <Menu.Item
+                icon={<FiSettings />}
+                onClick={() => router.push("/settings")}
+              >
+                Settings
+              </Menu.Item>
               <Menu.Item icon={<FiLogOut />} onClick={handleLogoutClick}>
                 Logout
               </Menu.Item>

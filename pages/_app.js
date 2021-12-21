@@ -4,6 +4,7 @@ import { NotionCredProvider } from "../context/NotionCred";
 import { NotificationsProvider } from "@mantine/notifications";
 import Head from "next/head";
 import Footer from "../components/Footer";
+import { SettingsProvider } from "../context/Settings";
 
 function MyApp({ Component, pageProps }) {
   return (
@@ -31,7 +32,10 @@ function MyApp({ Component, pageProps }) {
         {/* <!-- Twitter Meta Tags --> */}
         <meta name="twitter:card" content="summary_large_image" />
         <meta property="twitter:domain" content="" />
-        <meta property="twitter:url" content="https://www.watchlister.vercel.app/" />
+        <meta
+          property="twitter:url"
+          content="https://www.watchlister.vercel.app/"
+        />
         <meta name="twitter:title" content="Watchlister" />
         <meta
           name="twitter:description"
@@ -43,14 +47,16 @@ function MyApp({ Component, pageProps }) {
         <NormalizeCSS />
         <GlobalStyles />
         <NotificationsProvider>
-          <NotionCredProvider>
-            <div id="page-container">
-              <div id="content-wrap">
-                <Component {...pageProps} />
+          <SettingsProvider>
+            <NotionCredProvider>
+              <div id="page-container">
+                <div id="content-wrap">
+                  <Component {...pageProps} />
+                </div>
+                <Footer />
               </div>
-              <Footer />
-            </div>
-          </NotionCredProvider>
+            </NotionCredProvider>
+          </SettingsProvider>
         </NotificationsProvider>
       </MantineProvider>
 
