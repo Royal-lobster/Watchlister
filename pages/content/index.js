@@ -81,13 +81,14 @@ function Content({ APPLICATION_URL, TMDB_API_KEY, COUNTRY_CODE }) {
             return { name: genre.name };
           }),
         },
-        ...(whereToWatchSetting && {
-          ["Watch Provider"]: {
-            multi_select: watchProviders.flatrate.map((provider) => {
-              return { name: provider.provider_name };
-            }),
-          },
-        }),
+        ...(whereToWatchSetting &&
+          watchProviders?.flatrate && {
+            ["Watch Provider"]: {
+              multi_select: watchProviders?.flatrate.map((provider) => {
+                return { name: provider.provider_name };
+              }),
+            },
+          }),
       },
       icon: {
         external: {
@@ -307,6 +308,7 @@ function Content({ APPLICATION_URL, TMDB_API_KEY, COUNTRY_CODE }) {
             border-radius: 10px;
           }
           .content__watchProviders h2 {
+            flex: 1;
             display: flex;
             align-items: center;
             gap: 10px;
@@ -315,6 +317,7 @@ function Content({ APPLICATION_URL, TMDB_API_KEY, COUNTRY_CODE }) {
             font-size: min(1.3rem, 6vw);
           }
           .content__watchProvidersList {
+            flex: 4;
             display: flex;
             flex-wrap: wrap;
             gap: 20px;
