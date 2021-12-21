@@ -155,8 +155,8 @@ function Settings({ APPLICATION_URL }) {
         title="Found Missing Properties"
       >
         <Notification loading={loading} color="orange" title="" disallowClose>
-          The property "{presentSettingToChange.name}" is missing from the page
-          database. Shall I add them ?
+          The property &quot{presentSettingToChange.name}&quot is missing from
+          the page database. Shall I add them ?
         </Notification>
         <Group
           style={{
