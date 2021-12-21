@@ -253,7 +253,7 @@ function Content({ APPLICATION_URL, TMDB_API_KEY, COUNTRY_CODE }) {
           .content__information {
             display: flex;
             gap: 30px;
-            margin: 0px auto;
+            margin: 8vh auto 20px auto;
             align-items: center;
           }
           .content__coverImage {
