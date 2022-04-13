@@ -9,7 +9,7 @@ function SearchSuggestion({ name, mediaType, posterPath, id }) {
   };
   return (
     <>
-      <button className="searchSuggestion" onClick={handleSuggestionClick} tabIndex="0">
+      <button type="button" className="searchSuggestion" onClick={handleSuggestionClick} tabIndex="0">
         <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
           <Avatar src={`http://image.tmdb.org/t/p/w500/${posterPath}`} alt="" height={30}>
             <MdOutlineMovie />
