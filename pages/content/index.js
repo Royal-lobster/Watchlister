@@ -94,13 +94,15 @@ function Content({ APPLICATION_URL, TMDB_API_KEY, COUNTRY_CODE }) {
         parent: { database_id: databaseID },
         properties,
         icon: {
-          external: { url: `http://image.tmdb.org/t/p/w500${poster_path}` },
+          type: "external",
+          external: { url: `https://image.tmdb.org/t/p/original${poster_path}` },
         },
         cover: {
+          type: "external",
           external: {
             url: backdrop_path
-              ? `http://image.tmdb.org/t/p/w500${backdrop_path}`
-              : `http://image.tmdb.org/t/p/w500${poster_path}`,
+              ? `https://image.tmdb.org/t/p/original${backdrop_path}`
+              : `https://image.tmdb.org/t/p/original${poster_path}`,
           },
         },
         children: [
@@ -131,6 +133,8 @@ function Content({ APPLICATION_URL, TMDB_API_KEY, COUNTRY_CODE }) {
           },
         ],
       };
+
+      console.log(body_content);
 
       const response = await fetch(`${APPLICATION_URL}/api/add-page-to-db`, {
         method: "POST",
@@ -174,7 +178,7 @@ function Content({ APPLICATION_URL, TMDB_API_KEY, COUNTRY_CODE }) {
               <Image
                 className="content__coverImage"
                 alt={`${mediaData.title} cover`}
-                src={`http://image.tmdb.org/t/p/w500${mediaData.poster_path}`}
+                src={`https://image.tmdb.org/t/p/w500${mediaData.poster_path}`}
               />
             ) : (
               <div className="content__coverImage" />
@@ -228,7 +232,7 @@ function Content({ APPLICATION_URL, TMDB_API_KEY, COUNTRY_CODE }) {
                     <div className="content__provider" key={provider.id}>
                       <div className="content__providerImage">
                         <Image
-                          src={`http://image.tmdb.org/t/p/w45${provider.logo_path}`}
+                          src={`https://image.tmdb.org/t/p/w45${provider.logo_path}`}
                           alt={provider.name}
                           width={45}
                           height={45}
@@ -261,7 +265,7 @@ function Content({ APPLICATION_URL, TMDB_API_KEY, COUNTRY_CODE }) {
             flex: 1;
             background-color: #565656;
             height: 340px;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'%3E%3Cg fill='%23818181' fill-opacity='0.4'%3E%3Cpath d='M12 0h18v6h6v6h6v18h-6v6h-6v6H12v-6H6v-6H0V12h6V6h6V0zm12 6h-6v6h-6v6H6v6h6v6h6v6h6v-6h6v-6h6v-6h-6v-6h-6V6zm-6 12h6v6h-6v-6zm24 24h6v6h-6v-6z'%3E%3C/path%3E%3C/g%3E%3C/svg%3E");
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='https://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'%3E%3Cg fill='%23818181' fill-opacity='0.4'%3E%3Cpath d='M12 0h18v6h6v6h6v18h-6v6h-6v6H12v-6H6v-6H0V12h6V6h6V0zm12 6h-6v6h-6v6H6v6h6v6h6v6h6v-6h6v-6h6v-6h-6v-6h-6V6zm-6 12h6v6h-6v-6zm24 24h6v6h-6v-6z'%3E%3C/path%3E%3C/g%3E%3C/svg%3E");
             box-shadow: 2.8px 2.8px 2.2px rgba(0, 0, 0, 0.02),
               6.7px 6.7px 5.3px rgba(0, 0, 0, 0.028),
               12.5px 12.5px 10px rgba(0, 0, 0, 0.035),
