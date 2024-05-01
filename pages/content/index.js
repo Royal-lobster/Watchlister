@@ -1,8 +1,6 @@
 import {
   Blockquote,
   Button,
-  Chip,
-  Group,
   Image,
   Loader,
   Skeleton,
@@ -18,14 +16,13 @@ import { SettingsContext } from "../../context/Settings";
 
 export const getServerSideProps = ({ query }) => ({
   props: {
-    COUNTRY_CODE: query.country,
+    COUNTRY_CODE: query.country ?? "US",
     TMDB_API_KEY: process.env.TMDB_API_KEY,
     APPLICATION_URL: process.env.APPLICATION_URL,
   },
 });
 
 function Content({ APPLICATION_URL, TMDB_API_KEY, COUNTRY_CODE }) {
-  console.log("COUNTRY_CODE : ", COUNTRY_CODE);
   const notifications = useNotifications();
   let router = useRouter();
   let [notionUserCredentials] = useContext(NotionCredContext);
@@ -42,7 +39,6 @@ function Content({ APPLICATION_URL, TMDB_API_KEY, COUNTRY_CODE }) {
         `https://api.themoviedb.org/3/${type}/${id}?api_key=${TMDB_API_KEY}&language=en-US`
       );
       let data = await response.json();
-      console.log(data);
       setMediaData(data);
 
       // IF WHERE TO WATCH SETTING IS TRUE, FETCH PROVIDERS DATA
@@ -52,118 +48,120 @@ function Content({ APPLICATION_URL, TMDB_API_KEY, COUNTRY_CODE }) {
           `https://api.themoviedb.org/3/${type}/${id}/watch/providers?api_key=${TMDB_API_KEY}`
         );
         let data = await providerRes.json();
-        console.log("GLOBAL PROVIDER DATA", data);
 
         // FILTER PROVIDERS DATA BY USER COUNTRY CODE
         let providers = data.results[COUNTRY_CODE]
           ? data.results[COUNTRY_CODE]
           : data.results["US"];
-        console.log("PROVIDERS", providers);
         setWatchProviders(providers);
       }
     }
     fetchData();
-  }, [router.query.id, router.query.type]);
+  }, [COUNTRY_CODE, TMDB_API_KEY, router.query.id, router.query.type, whereToWatchSetting]);
 
-  const handleAddToNotionClick = () => {
-    let databaseID = localStorage.getItem("NOTION_WATCHLIST_PAGE_ID");
-    let body_content = {
-      parent: { database_id: databaseID },
-      properties: {
+  const handleAddToNotionClick = async () => {
+    try {
+      const databaseID = localStorage.getItem("NOTION_WATCHLIST_PAGE_ID");
+      if (!databaseID || !mediaData) {
+        throw new Error("Required data is missing.");
+      }
+
+      const { name, title, genres, poster_path, backdrop_path, overview, tagline } = mediaData;
+      const selectedName = name || title;
+
+      // Construct properties
+      const properties = {
         Name: {
           title: [
             {
-              text: {
-                content: mediaData?.name ? mediaData?.name : mediaData?.title,
-              },
+              text: { content: selectedName },
             },
           ],
         },
         Tags: {
-          multi_select: mediaData.genres.map((genre) => {
-            return { name: genre.name };
-          }),
+          multi_select: genres.map((genre) => ({ name: genre.name })),
         },
-        ...(whereToWatchSetting &&
-          watchProviders?.flatrate && {
-            ["Watch Provider"]: {
-              multi_select: watchProviders?.flatrate.map((provider) => {
-                return { name: provider.provider_name };
-              }),
+      };
+
+      if (whereToWatchSetting && watchProviders?.flatrate) {
+        properties["Watch Provider"] = {
+          multi_select: watchProviders.flatrate.map((provider) => ({ name: provider.provider_name })),
+        };
+      }
+
+      // Construct body content
+      const body_content = {
+        parent: { database_id: databaseID },
+        properties,
+        icon: {
+          external: { url: `http://image.tmdb.org/t/p/w500${poster_path}` },
+        },
+        cover: {
+          external: {
+            url: backdrop_path
+              ? `http://image.tmdb.org/t/p/w500${backdrop_path}`
+              : `http://image.tmdb.org/t/p/w500${poster_path}`,
+          },
+        },
+        children: [
+          {
+            object: "block",
+            type: "heading_2",
+            heading_2: {
+              text: [{ type: "text", text: { content: "Description" } }],
             },
-          }),
-      },
-      icon: {
-        external: {
-          url: `http://image.tmdb.org/t/p/w500${mediaData.poster_path}`,
-        },
-      },
-      cover: {
-        external: {
-          url: mediaData.backdrop_path
-            ? `http://image.tmdb.org/t/p/w500${mediaData.backdrop_path}`
-            : `http://image.tmdb.org/t/p/w500${mediaData.poster_path}`,
-        },
-      },
-      children: [
-        {
-          object: "block",
-          type: "heading_2",
-          heading_2: {
-            text: [{ type: "text", text: { content: "Description" } }],
           },
-        },
-        {
-          object: "block",
-          type: "paragraph",
-          paragraph: {
-            text: [
-              {
-                type: "text",
-                text: {
-                  content: mediaData.overview,
-                },
-              },
-            ],
+          {
+            object: "block",
+            type: "paragraph",
+            paragraph: {
+              text: [
+                { type: "text", text: { content: overview } },
+              ],
+            },
           },
-        },
-        {
-          object: "block",
-          type: "quote",
-          quote: {
-            text: [
-              {
-                type: "text",
-                text: {
-                  content: mediaData.tagline,
-                },
-              },
-            ],
+          {
+            object: "block",
+            type: "quote",
+            quote: {
+              text: [
+                { type: "text", text: { content: tagline } },
+              ],
+            },
           },
+        ],
+      };
+
+      const response = await fetch(`${APPLICATION_URL}/api/add-page-to-db`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-      ],
-    };
-    fetch(`${APPLICATION_URL}/api/add-page-to-db`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        token: notionUserCredentials.access_token,
-        body_content: JSON.stringify(body_content),
-      }),
-    }).then((response) => {
-      response.json().then((data) => {
-        console.log(data);
+        body: JSON.stringify({
+          token: notionUserCredentials.access_token,
+          body_content: JSON.stringify(body_content),
+        }),
       });
-    });
-    notifications.showNotification({
-      title: `Added To Notion`,
-      message: `Added ${
-        mediaData?.name ? mediaData?.name : mediaData?.title
-      } to your page`,
-    });
-    window.location.replace(`${APPLICATION_URL}/dashboard`);
+
+      const data = await response.json();
+      console.log(data);
+      if(data.object === "error" || data.error){
+        console.log(data);
+        return;
+      } else {
+        notifications.showNotification({
+          title: "Added To Notion",
+          message: `Added ${selectedName} to your page`,
+        });
+      }
+      window.location.replace(`${APPLICATION_URL}/dashboard`);
+    } catch (error) {
+      console.error("Error:", error);
+      notifications.showNotification({
+        title: "Error",
+        message: `An error occurred: ${error.message}`,
+      });
+    }
   };
 
   if (mediaData.id) {
@@ -229,9 +227,11 @@ function Content({ APPLICATION_URL, TMDB_API_KEY, COUNTRY_CODE }) {
                   {watchProviders?.flatrate.map((provider) => (
                     <div className="content__provider" key={provider.id}>
                       <div className="content__providerImage">
-                        <img
+                        <Image
                           src={`http://image.tmdb.org/t/p/w45${provider.logo_path}`}
                           alt={provider.name}
+                          width={45}
+                          height={45}
                         />
                       </div>
                       <div className="content__providerText">
