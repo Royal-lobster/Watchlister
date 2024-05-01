@@ -31,13 +31,13 @@ function Search({ TMDB_API_KEY }) {
       setSearchData(results?.filter((result) => result.media_type === "movie" || result.media_type === "tv"));
       setContentLoading(false);
     }
-  }, [router.query.p, router.query.q]);
+  }, [TMDB_API_KEY, router.query.p, router.query.q]);
 
   useEffect(() => {
     if (activePage !== router.query.p) {
       router.push(`/search?q=${router.query.q}&p=${activePage}`);
     }
-  }, [activePage]);
+  }, [activePage, router]);
 
   return (
     <>
