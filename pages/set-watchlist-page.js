@@ -44,6 +44,15 @@ function SetWatchlistPage({ APPLICATION_URL }) {
 
   let handleSetWatchlistPageSearchSubmit = async (e) => {
     e.preventDefault();
+    if (search.trim() === "") {
+      notifications.showNotification({
+        title: "Search Field is Empty",
+        message: "Please enter a search term.",
+        color: "red",
+        autoClose: 3000,
+      });
+      return;
+    }
     setSearchLoading(true);
     let response = await fetch(`${APPLICATION_URL}/api/search-watchlist-page`, {
       method: "POST",

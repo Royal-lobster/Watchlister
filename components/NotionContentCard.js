@@ -53,6 +53,7 @@ function NotionContentCard({ title, cover, icon, id, genres, handlePageDeleteCon
       <style jsx global>
         {`
           .notionContentCard {
+            max-width: 400px;
             margin: 0 auto;
             display: flex;
             flex-direction: column;

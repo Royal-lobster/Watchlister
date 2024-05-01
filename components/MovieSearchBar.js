@@ -23,7 +23,7 @@ function MovieSearchBar({ TMDB_API_KEY }) {
         results?.filter((result) => result.media_type === "movie" || result.media_type === "tv").slice(0, 5)
       );
     }
-  }, [debouncedSearchTerm]);
+  }, [TMDB_API_KEY, debouncedSearchTerm]);
 
   return (
     <>

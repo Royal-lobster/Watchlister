@@ -7,7 +7,6 @@ function NotionWatchlist({
   contentLoading,
   handlePageDeleteConfirm,
 }) {
-  console.log(contentData);
   return (
     <>
       <div className="notionWatchlist">
@@ -15,7 +14,7 @@ function NotionWatchlist({
         <div className="notionWatchlist__toWatch"></div>
         <div className="notionWatchlist__watched">
           {contentLoading &&
-            Array.from(Array(9)).map((e, i) => (
+            Array.from(Array(9)).map((_, i) => (
               <Skeleton key={i} height={270} shadow="lg" radius={0} />
             ))}
           {contentData?.map(
@@ -33,8 +32,7 @@ function NotionWatchlist({
                 />
               )
           )}
-          {contentData?.length === 0 ||
-            (contentData[0].properties.Name.title.length == 0 && (
+          {(contentData?.length === 0) && (
               <Paper
                 shadow="xs"
                 style={{
@@ -49,7 +47,7 @@ function NotionWatchlist({
                   variant="gradient"
                   gradient={{ from: "indigo", to: "cyan", deg: 45 }}
                 >
-                  Your watchlist is super fresh !
+                  No TV Shows, Movies, Anime found
                 </Text>
                 <Text
                   size="md"
@@ -59,7 +57,7 @@ function NotionWatchlist({
                   page by searching from the search bar above.
                 </Text>
               </Paper>
-            ))}
+            )}
         </div>
       </div>
       <style jsx>{`

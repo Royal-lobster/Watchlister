@@ -45,7 +45,14 @@ function Dashboard({ TMDB_API_KEY, APPLICATION_URL }) {
       }),
     }).then((response) => {
       response.json().then((data) => {
-        console.log(data.results);
+        if(data.error){
+          setContentLoading(false);
+          return;
+        }
+        if(data.results.length == 0) {
+          setContentLoading(false);
+          return;
+        }
         setContentData(data.results);
         setContentLoading(false);
       });

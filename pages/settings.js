@@ -94,7 +94,7 @@ function Settings({ APPLICATION_URL }) {
       },
       body: JSON.stringify({
         token: notionUserCredentials.access_token,
-        page_id: await localStorage.getItem("NOTION_WATCHLIST_PAGE_ID"),
+        page_id: localStorage.getItem("NOTION_WATCHLIST_PAGE_ID"),
       }),
     });
     let data = await response.json();
@@ -135,7 +135,7 @@ function Settings({ APPLICATION_URL }) {
                     properties: {
                       ["Watch Provider"]: {
                         type: "multi_select",
-                        multi_select: [],
+                        multi_select: {},
                       },
                     },
                   })
