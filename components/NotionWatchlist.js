@@ -14,7 +14,7 @@ function NotionWatchlist({
         <div className="notionWatchlist__toWatch"></div>
         <div className="notionWatchlist__watched">
           {contentLoading &&
-            Array.from(Array(9)).map((e, i) => (
+            Array.from(Array(9)).map((_, i) => (
               <Skeleton key={i} height={270} shadow="lg" radius={0} />
             ))}
           {contentData?.map(
@@ -32,8 +32,7 @@ function NotionWatchlist({
                 />
               )
           )}
-          {(contentData?.length === 0 ||
-            contentData[0].properties.Name.title.length === 0) && (
+          {(contentData?.length === 0) && (
               <Paper
                 shadow="xs"
                 style={{
