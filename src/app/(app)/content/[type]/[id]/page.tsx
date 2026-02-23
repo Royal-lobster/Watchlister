@@ -99,9 +99,9 @@ export default async function ContentPage({
         .cdp-hero {
           position: relative;
           width: 100%;
-          height: 72vh;
+          height: 75vh;
           min-height: 480px;
-          max-height: 640px;
+          max-height: 720px;
         }
 
         .cdp-backdrop {
@@ -151,7 +151,7 @@ export default async function ContentPage({
           z-index: 10;
           max-width: 64rem;
           margin: 0 auto;
-          padding: 0 1.5rem 5rem;
+          padding: 0 1.5rem 6rem;
           /* Pull content up so poster overlaps the hero */
           margin-top: -26rem;
         }
@@ -159,7 +159,7 @@ export default async function ContentPage({
         /* ---- Two-column layout: poster + metadata ---- */
         .cdp-inner {
           display: flex;
-          gap: 2.5rem;
+          gap: 3rem;
           align-items: flex-start;
         }
 
@@ -237,21 +237,21 @@ export default async function ContentPage({
         .cdp-meta {
           flex: 1;
           min-width: 0;
-          padding-top: 2rem;
+          padding-top: 3rem;
         }
 
         /* Media type label */
         .cdp-media-label {
           display: inline-flex;
           align-items: center;
-          gap: 0.4rem;
-          font-family: var(--font-mono);
+          gap: 0.5rem;
+          font-family: var(--font-sans), ui-sans-serif, sans-serif;
           font-size: 0.6875rem;
-          font-weight: 500;
-          letter-spacing: 0.16em;
+          font-weight: 600;
+          letter-spacing: 0.2em;
           text-transform: uppercase;
           color: var(--color-accent);
-          margin-bottom: 0.75rem;
+          margin-bottom: 1rem;
         }
 
         .cdp-media-label-dot {
@@ -270,7 +270,7 @@ export default async function ContentPage({
           line-height: 1.1;
           color: var(--color-text-primary);
           letter-spacing: -0.02em;
-          margin: 0 0 0.75rem;
+          margin: 0 0 1rem;
           /* Prevent title from being too wide */
           max-width: 36ch;
         }
@@ -355,11 +355,23 @@ export default async function ContentPage({
         }
 
         /* Genres */
+        .cdp-genres-section {
+          margin-bottom: 1.5rem;
+        }
+        .cdp-section-label {
+          display: block;
+          font-family: var(--font-sans), ui-sans-serif, sans-serif;
+          font-size: 0.5625rem;
+          font-weight: 700;
+          letter-spacing: 0.22em;
+          text-transform: uppercase;
+          color: var(--color-text-muted);
+          margin-bottom: 0.625rem;
+        }
         .cdp-genres {
           display: flex;
           flex-wrap: wrap;
           gap: 0.5rem;
-          margin-bottom: 1.25rem;
         }
 
         /* Tagline */
@@ -378,11 +390,11 @@ export default async function ContentPage({
 
         /* Overview */
         .cdp-overview {
-          font-size: 0.9375rem;
-          line-height: 1.75;
+          font-size: 1rem;
+          line-height: 1.85;
           color: var(--color-text-secondary);
-          max-width: 60ch;
-          margin-bottom: 2rem;
+          max-width: 56ch;
+          margin-bottom: 2.5rem;
         }
 
         /* Actions row */
@@ -395,9 +407,9 @@ export default async function ContentPage({
 
         /* ---- Watch providers section ---- */
         .cdp-providers-section {
-          margin-top: 3rem;
-          padding-top: 2rem;
-          border-top: 1px solid var(--color-border-subtle);
+          margin-top: 4rem;
+          padding-top: 2.5rem;
+          border-top: 1px solid var(--color-border);
         }
 
         /* ---- Responsive ---- */
@@ -470,7 +482,7 @@ export default async function ContentPage({
           animation: cdp-fade-up 0.45s cubic-bezier(0.22, 1, 0.36, 1) 0.32s both;
         }
 
-        .cdp-genres {
+        .cdp-genres-section {
           animation: cdp-fade-up 0.45s cubic-bezier(0.22, 1, 0.36, 1) 0.38s both;
         }
 
@@ -521,6 +533,19 @@ export default async function ContentPage({
           </div>
           <div className="cdp-hero-overlay" />
           <div className="cdp-hero-vignette" />
+          {/* Film grain on hero */}
+          <svg
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0 w-full h-full"
+            style={{ opacity: 0.04, zIndex: 2 }}
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <filter id="hero-grain">
+              <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch" />
+              <feColorMatrix type="saturate" values="0" />
+            </filter>
+            <rect width="100%" height="100%" filter="url(#hero-grain)" />
+          </svg>
         </div>
 
         {/* ---------------------------------------------------------------- */}
@@ -582,6 +607,7 @@ export default async function ContentPage({
               <h1 className="cdp-title">{title}</h1>
 
               {/* Year + rating */}
+              <span className="cdp-section-label">Details</span>
               <div className="cdp-vitals">
                 {year && (
                   <span className="cdp-year" aria-label={`Released: ${year}`}>
@@ -601,12 +627,15 @@ export default async function ContentPage({
 
               {/* Genres */}
               {genres.length > 0 && (
-                <div className="cdp-genres" role="list" aria-label="Genres">
-                  {genres.map((genre) => (
-                    <span key={genre} role="listitem">
-                      <Badge variant="muted">{genre}</Badge>
-                    </span>
-                  ))}
+                <div className="cdp-genres-section">
+                  <span className="cdp-section-label">Genres</span>
+                  <div className="cdp-genres" role="list" aria-label="Genres">
+                    {genres.map((genre) => (
+                      <span key={genre} role="listitem">
+                        <Badge variant="muted">{genre}</Badge>
+                      </span>
+                    ))}
+                  </div>
                 </div>
               )}
 
