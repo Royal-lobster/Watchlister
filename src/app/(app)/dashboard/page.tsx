@@ -35,14 +35,28 @@ export default async function DashboardPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-(--color-text-primary)" style={{ fontFamily: "var(--font-display), Georgia, serif" }}>My Watchlist</h1>
-        <p className="text-[0.625rem] font-semibold tracking-[0.18em] uppercase text-(--color-text-muted) mt-2">
-          {entries.length} {entries.length === 1 ? "item" : "items"}
-        </p>
+    <div className="max-w-screen-xl mx-auto px-6 py-12">
+      {/* Editorial header */}
+      <div className="mb-12">
+        <span className="editorial-label">Your Collection</span>
+        <h1
+          className="mt-2 text-4xl sm:text-5xl font-bold tracking-tight"
+          style={{
+            fontFamily: "var(--font-display), Georgia, serif",
+            color: "var(--color-text-primary)",
+          }}
+        >
+          Watchlist
+        </h1>
+        <div className="mt-4 flex items-center gap-4">
+          <div className="h-px flex-1 bg-(--color-border)" />
+          <span className="text-[0.625rem] font-semibold tracking-[0.18em] uppercase text-(--color-text-muted)">
+            {entries.length} {entries.length === 1 ? "title" : "titles"}
+          </span>
+          <div className="h-px flex-1 bg-(--color-border)" />
+        </div>
       </div>
-      <div className="mt-4 h-px bg-(--color-border)" />
+
       <WatchlistGrid entries={entries} />
     </div>
   );
