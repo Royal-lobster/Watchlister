@@ -128,11 +128,10 @@ export function Navbar({ workspaceName, workspaceIcon, onLogout }: NavbarProps) 
         {/* ── Left: wordmark ── */}
         <Link
           href="/dashboard"
+          style={{ fontFamily: "var(--font-display), Georgia, serif" }}
           className={[
-            "font-bold tracking-widest uppercase",
-            "text-sm font-sans",
+            "text-lg font-bold tracking-wide",
             "text-(--color-text-primary)",
-            "letter-spacing-[0.15em]",
             // Subtle accent tint on hover
             "transition-colors duration-150",
             "hover:text-(--color-accent)",
