@@ -18,7 +18,7 @@ export default function LoginPage() {
         }
         .login-root .login-cta:hover {
           background-color: var(--color-accent-hover);
-          box-shadow: 0 0 0 1px var(--color-accent), 0 8px 24px -4px rgb(229 56 59 / 0.35);
+          box-shadow: 0 0 0 1px var(--color-accent), 0 8px 24px -4px rgba(201, 168, 76, 0.35);
           transform: translateY(-1px);
         }
         .login-root .login-cta:active {
@@ -32,7 +32,7 @@ export default function LoginPage() {
         className="pointer-events-none absolute inset-0"
         style={{
           background:
-            "radial-gradient(ellipse 80% 60% at 50% 50%, #121212 0%, #0a0a0a 55%, #000000 100%)",
+            "radial-gradient(ellipse 80% 60% at 50% 50%, #131316 0%, #0B0B0F 55%, #000000 100%)",
         }}
       />
 
@@ -40,7 +40,7 @@ export default function LoginPage() {
       <svg
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 w-full h-full"
-        style={{ opacity: 0.035 }}
+        style={{ opacity: 0.025 }}
         xmlns="http://www.w3.org/2000/svg"
       >
         <filter id="grain">
@@ -79,7 +79,7 @@ export default function LoginPage() {
         {/* Wordmark */}
         <h1
           className="text-[clamp(3.5rem,12vw,7rem)] font-bold leading-none tracking-[-0.02em] select-none"
-          style={{ color: "var(--color-text-primary)" }}
+          style={{ fontFamily: "var(--font-display), Georgia, serif", color: "var(--color-text-primary)" }}
         >
           Watchlister
         </h1>
@@ -102,7 +102,7 @@ export default function LoginPage() {
         {/* CTA Button */}
         <a
           href={notionAuthUrl}
-          className="login-cta flex items-center gap-3 px-8 py-4 rounded-full text-sm font-semibold tracking-wide"
+          className="login-cta flex items-center gap-3 px-8 py-4 rounded-md text-sm font-semibold tracking-wide"
         >
           <SiNotion className="w-4 h-4 flex-shrink-0" aria-hidden="true" />
           Connect with Notion
