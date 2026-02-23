@@ -10,7 +10,7 @@ export default async function SettingsPage() {
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-lg">
-      <h1 className="text-2xl font-bold mb-6 text-(--color-text-primary)">Settings</h1>
+      <h1 className="text-2xl font-bold mb-6 text-(--color-text-primary)" style={{ fontFamily: "var(--font-display), Georgia, serif" }}>Settings</h1>
       <SettingsClient initialSettings={settings} />
     </div>
   );

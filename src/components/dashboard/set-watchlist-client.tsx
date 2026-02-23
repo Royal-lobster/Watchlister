@@ -168,7 +168,7 @@ export function SetWatchlistClient({ databases }: SetWatchlistClientProps) {
         className="pointer-events-none absolute inset-0"
         style={{
           background:
-            "radial-gradient(ellipse 70% 55% at 50% 40%, #111111 0%, #0a0a0a 60%, #050505 100%)",
+            "radial-gradient(ellipse 70% 55% at 50% 40%, #131316 0%, #0B0B0F 60%, #07070B 100%)",
         }}
       />
 
@@ -187,7 +187,7 @@ export function SetWatchlistClient({ databases }: SetWatchlistClientProps) {
       <svg
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 w-full h-full"
-        style={{ opacity: 0.03 }}
+        style={{ opacity: 0.025 }}
         xmlns="http://www.w3.org/2000/svg"
       >
         <filter id="swc-grain">
@@ -215,7 +215,7 @@ export function SetWatchlistClient({ databases }: SetWatchlistClientProps) {
           </span>
           <h1
             className="text-3xl font-bold tracking-tight leading-none"
-            style={{ color: "var(--color-text-primary)" }}
+            style={{ color: "var(--color-text-primary)", fontFamily: "var(--font-display), Georgia, serif" }}
           >
             Choose your watchlist
           </h1>
