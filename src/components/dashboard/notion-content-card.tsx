@@ -108,7 +108,7 @@ export function NotionContentCard({
         .ncc-root {
           position: relative;
           cursor: pointer;
-          border-radius: var(--radius-lg);
+          border-radius: var(--radius-md);
           overflow: hidden;
           border: 1px solid var(--color-border);
           background-color: var(--color-surface);
@@ -211,6 +211,7 @@ export function NotionContentCard({
           padding: 0.625rem 0.75rem 0.75rem;
         }
         .ncc-title {
+          font-family: var(--font-display), Georgia, serif;
           font-size: 0.8125rem;
           font-weight: 600;
           letter-spacing: -0.01em;

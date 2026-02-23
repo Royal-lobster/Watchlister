@@ -37,11 +37,12 @@ export default async function DashboardPage() {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-(--color-text-primary)">My Watchlist</h1>
-        <p className="text-(--color-text-secondary) mt-1">
+        <h1 className="text-3xl font-bold text-(--color-text-primary)" style={{ fontFamily: "var(--font-display), Georgia, serif" }}>My Watchlist</h1>
+        <p className="text-[0.625rem] font-semibold tracking-[0.18em] uppercase text-(--color-text-muted) mt-2">
           {entries.length} {entries.length === 1 ? "item" : "items"}
         </p>
       </div>
+      <div className="mt-4 h-px bg-(--color-border)" />
       <WatchlistGrid entries={entries} />
     </div>
   );

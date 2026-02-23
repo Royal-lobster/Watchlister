@@ -125,6 +125,10 @@ export function WatchlistGrid({ entries }: WatchlistGridProps) {
           gap: 1rem;
           grid-template-columns: repeat(2, minmax(0, 1fr));
         }
+        .wg-grid > *:first-child {
+          grid-column: span 2;
+          grid-row: span 2;
+        }
         @media (min-width: 768px) {
           .wg-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
         }
