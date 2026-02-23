@@ -19,7 +19,7 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(function Card(
       className={[
         "bg-(--color-surface)",
         "border border-(--color-border)",
-        "rounded-(--radius-lg)",
+        "rounded-(--radius-md)",
         "transition-all duration-200 ease-out",
         !isStatic && [
           "hover:-translate-y-0.5",

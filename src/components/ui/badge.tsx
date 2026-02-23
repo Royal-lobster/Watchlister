@@ -1,6 +1,6 @@
 import { HTMLAttributes } from "react";
 
-type BadgeVariant = "default" | "accent" | "muted";
+type BadgeVariant = "default" | "accent" | "muted" | "secondary";
 
 interface BadgeProps extends HTMLAttributes<HTMLSpanElement> {
   variant?: BadgeVariant;
@@ -24,6 +24,12 @@ const variantStyles: Record<BadgeVariant, string> = {
     "border border-transparent",
     "text-(--color-text-muted)",
   ].join(" "),
+
+  secondary: [
+    "bg-(--color-secondary-subtle)",
+    "border border-(--color-secondary)/20",
+    "text-(--color-secondary)",
+  ].join(" "),
 };
 
 export function Badge({
@@ -37,7 +43,7 @@ export function Badge({
       className={[
         "inline-flex items-center",
         "px-2 py-0.5",
-        "rounded-full",
+        "rounded-(--radius-sm)",
         "text-xs font-medium tracking-wide",
         "font-sans",
         "leading-none",

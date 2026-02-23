@@ -32,9 +32,9 @@ const variantStyles: Record<ButtonVariant, string> = {
   ].join(" "),
 
   danger: [
-    "bg-transparent text-(--color-accent)",
-    "border border-(--color-accent)",
-    "hover:bg-(--color-accent) hover:text-white",
+    "bg-transparent text-(--color-secondary)",
+    "border border-(--color-secondary)",
+    "hover:bg-(--color-secondary) hover:text-white",
     "active:scale-[0.98]",
   ].join(" "),
 };
