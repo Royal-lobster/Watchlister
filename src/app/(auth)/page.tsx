@@ -1,8 +1,9 @@
 import { SiNotion } from "react-icons/si";
 
-const notionAuthUrl = `https://api.notion.com/v1/oauth/authorize?client_id=${process.env.NOTION_OAUTH_CLIENT_ID}&response_type=code&owner=user&redirect_uri=${encodeURIComponent((process.env.APPLICATION_URL ?? "http://localhost:3000") + "/auth/notion/callback")}`;
+export const dynamic = "force-dynamic";
 
 export default function LoginPage() {
+  const notionAuthUrl = `https://api.notion.com/v1/oauth/authorize?client_id=${process.env.NOTION_OAUTH_CLIENT_ID}&response_type=code&owner=user&redirect_uri=${encodeURIComponent((process.env.APPLICATION_URL ?? "http://localhost:3000") + "/auth/notion/callback")}`;
   return (
     <main
       className="login-root relative min-h-screen flex flex-col items-center justify-center overflow-hidden"
