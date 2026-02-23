@@ -87,9 +87,6 @@ export default async function ContentPage({
       {/* Styles                                                               */}
       {/* ------------------------------------------------------------------ */}
       <style>{`
-        /* Google Fonts — editorial serif for title, clean mono for metadata */
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Mono:wght@300;400;500&display=swap');
-
         /* ---- Layout shell ---- */
         .cdp-root {
           position: relative;
@@ -129,10 +126,10 @@ export default async function ContentPage({
           inset: 0;
           background: linear-gradient(
             to bottom,
-            rgba(10, 10, 10, 0.15) 0%,
-            rgba(10, 10, 10, 0.35) 40%,
-            rgba(10, 10, 10, 0.85) 75%,
-            rgba(10, 10, 10, 1)   100%
+            rgba(11, 11, 15, 0.15) 0%,
+            rgba(11, 11, 15, 0.35) 40%,
+            rgba(11, 11, 15, 0.85) 75%,
+            rgba(11, 11, 15, 1)   100%
           );
         }
 
@@ -143,7 +140,7 @@ export default async function ContentPage({
           background: radial-gradient(
             ellipse 120% 100% at 50% 0%,
             transparent 40%,
-            rgba(10, 10, 10, 0.6) 100%
+            rgba(11, 11, 15, 0.6) 100%
           );
           pointer-events: none;
         }
@@ -248,7 +245,7 @@ export default async function ContentPage({
           display: inline-flex;
           align-items: center;
           gap: 0.4rem;
-          font-family: 'DM Mono', var(--font-mono);
+          font-family: var(--font-mono);
           font-size: 0.6875rem;
           font-weight: 500;
           letter-spacing: 0.16em;
@@ -267,7 +264,7 @@ export default async function ContentPage({
 
         /* Title */
         .cdp-title {
-          font-family: 'Playfair Display', Georgia, serif;
+          font-family: var(--font-display), Georgia, serif;
           font-size: clamp(2rem, 5vw, 3.25rem);
           font-weight: 900;
           line-height: 1.1;
@@ -288,7 +285,7 @@ export default async function ContentPage({
         }
 
         .cdp-year {
-          font-family: 'DM Mono', var(--font-mono);
+          font-family: var(--font-mono);
           font-size: 0.875rem;
           font-weight: 400;
           color: var(--color-text-secondary);
@@ -309,7 +306,7 @@ export default async function ContentPage({
         }
 
         .cdp-rating-score {
-          font-family: 'DM Mono', var(--font-mono);
+          font-family: var(--font-mono);
           font-size: 1rem;
           font-weight: 500;
           color: var(--color-text-primary);
@@ -367,7 +364,7 @@ export default async function ContentPage({
 
         /* Tagline */
         .cdp-tagline {
-          font-family: 'Playfair Display', Georgia, serif;
+          font-family: var(--font-display), Georgia, serif;
           font-style: italic;
           font-size: 1rem;
           font-weight: 700;
@@ -517,7 +514,7 @@ export default async function ContentPage({
                   position: "absolute",
                   inset: 0,
                   background:
-                    "linear-gradient(135deg, #1a0a0b 0%, #0d0d1a 50%, #0a0a0a 100%)",
+                    "linear-gradient(135deg, #12121A 0%, #0E0E14 50%, #0a0a0a 100%)",
                 }}
               />
             )}
