@@ -14,8 +14,8 @@ export default async function DashboardPage() {
 
   let entries: any[] = [];
   try {
-    const response = await notion.databases.query({
-      database_id: dbId,
+    const response = await notion.dataSources.query({
+      data_source_id: dbId,
       sorts: [{ timestamp: "created_time", direction: "descending" }],
       page_size: 50,
     });

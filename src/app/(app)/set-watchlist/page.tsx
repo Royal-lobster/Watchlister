@@ -10,12 +10,12 @@ export default async function SetWatchlistPage() {
   const notion = createNotionClient(session.access_token);
 
   const searchResponse = await notion.search({
-    filter: { value: "database", property: "object" },
+    filter: { value: "data_source", property: "object" },
     sort: { direction: "descending", timestamp: "last_edited_time" },
   });
 
   const databases = searchResponse.results
-    .filter((r) => r.object === "database")
+    .filter((r) => r.object === "data_source")
     .map((db: any) => ({
       id: db.id,
       title: db.title?.[0]?.plain_text ?? "Untitled",
