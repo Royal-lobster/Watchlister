@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { getSession, getNotionDbId } from "@/lib/auth";
-import { createNotionClient, extractTitle, extractMultiSelect } from "@/lib/notion";
+import { createNotionClient, extractTitle, extractMultiSelect, extractSelect } from "@/lib/notion";
 import { WatchlistGrid } from "@/components/dashboard/watchlist-grid";
 
 export default async function DashboardPage() {
@@ -22,14 +22,22 @@ export default async function DashboardPage() {
 
     entries = response.results
       .filter((p) => p.object === "page")
-      .map((page: any) => ({
-        pageId: page.id,
-        title: extractTitle(page.properties),
-        genres: extractMultiSelect(page.properties, "Tags"),
-        mediaType: page.properties["Type"]?.select?.name ?? "Movie",
-        posterUrl: page.cover?.external?.url ?? page.cover?.file?.url ?? null,
-        notionUrl: page.url,
-      }));
+      .map((page: any) => {
+        const typeValue = extractSelect(page.properties, "Type");
+        // Normalize: "TV Show", "tv", "TV", "TV Series" all → "TV Show", else "Movie"
+        const isTV = typeValue
+          ? /tv/i.test(typeValue) || /series/i.test(typeValue)
+          : false;
+
+        return {
+          pageId: page.id,
+          title: extractTitle(page.properties),
+          genres: extractMultiSelect(page.properties, "Tags"),
+          mediaType: isTV ? "TV Show" : (typeValue ?? "Movie"),
+          posterUrl: page.cover?.external?.url ?? page.cover?.file?.url ?? null,
+          notionUrl: page.url,
+        };
+      });
   } catch (error) {
     console.error("Failed to fetch watchlist:", error);
   }

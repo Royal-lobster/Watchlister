@@ -1,16 +1,13 @@
-import { CSSProperties } from "react";
+import { cn } from "@/lib/utils"
 
-export function Skeleton({
-  className,
-  style,
-}: {
-  className?: string;
-  style?: CSSProperties;
-}) {
+function Skeleton({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
-      className={`animate-pulse rounded-md bg-(--color-surface-raised) ${className ?? ""}`}
-      style={style}
+      data-slot="skeleton"
+      className={cn("bg-accent animate-pulse rounded-md", className)}
+      {...props}
     />
-  );
+  )
 }
+
+export { Skeleton }

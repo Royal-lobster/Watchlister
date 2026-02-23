@@ -1,5 +1,9 @@
 import Link from "next/link";
 import Image from "next/image";
+import { Film, Tv, Search } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 import type { TmdbSearchResult } from "@/types";
 import { getTmdbImageUrl } from "@/lib/tmdb";
 
@@ -28,6 +32,28 @@ function getTitle(result: TmdbSearchResult): string {
 }
 
 // ---------------------------------------------------------------------------
+// NoPosterPlaceholder — shared fallback for missing poster images
+// ---------------------------------------------------------------------------
+
+function NoPosterPlaceholder({ size = "sm" }: { size?: "sm" | "lg" }) {
+  return (
+    <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-muted">
+      <Film
+        className={cn(
+          "text-muted-foreground/40",
+          size === "lg" ? "size-9" : "size-7"
+        )}
+        strokeWidth={1}
+        aria-hidden="true"
+      />
+      <span className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground/50">
+        No poster
+      </span>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
 // ResultCard — individual poster card
 // ---------------------------------------------------------------------------
 
@@ -39,246 +65,80 @@ function ResultCard({ result }: { result: TmdbSearchResult }) {
   const posterUrl = getTmdbImageUrl(result.poster_path, "w300");
 
   return (
-    <>
-      <style>{`
-        .src-card {
-          position: relative;
-          display: block;
-          border-radius: var(--radius-md);
-          overflow: hidden;
-          border: 1px solid var(--color-border);
-          background-color: var(--color-surface);
-          text-decoration: none;
-          transition:
-            border-color 0.22s ease,
-            box-shadow 0.22s ease,
-            transform 0.22s ease;
-          outline: none;
-        }
-        .src-card:hover {
-          border-color: color-mix(in srgb, var(--color-accent) 45%, var(--color-border));
-          box-shadow:
-            0 0 0 1px color-mix(in srgb, var(--color-accent) 12%, transparent),
-            0 12px 36px -8px color-mix(in srgb, var(--color-accent) 20%, transparent),
-            0 2px 8px -2px rgb(0 0 0 / 0.65);
-          transform: translateY(-3px);
-        }
-        .src-card:focus-visible {
-          border-color: var(--color-accent);
-          box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-accent) 35%, transparent);
-        }
+    <Link
+      href={href}
+      aria-label={`${title} (${year}) — ${isTV ? "TV Show" : "Movie"}`}
+      className={cn(
+        "group relative flex flex-col rounded-md overflow-hidden",
+        "border border-border bg-card text-card-foreground",
+        "hover:-translate-y-0.5 hover:shadow-lg hover:border-primary/40",
+        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+        "transition-all duration-200 ease-out"
+      )}
+    >
+      {/* Poster */}
+      <div className="relative w-full aspect-[2/3] overflow-hidden bg-muted">
+        {posterUrl ? (
+          <Image
+            src={posterUrl}
+            alt={`${title} poster`}
+            fill
+            sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 20vw"
+            className="object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+            priority={false}
+          />
+        ) : (
+          <NoPosterPlaceholder size="sm" />
+        )}
 
-        /* Poster wrapper */
-        .src-poster-wrap {
-          position: relative;
-          width: 100%;
-          aspect-ratio: 2 / 3;
-          overflow: hidden;
-          background-color: var(--color-surface-raised);
-        }
+        {/* Gradient overlay — fades poster into card body */}
+        <div
+          className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-card/90 z-10"
+          aria-hidden="true"
+        />
 
-        /* Poster scale on hover */
-        .src-card:hover .src-poster-img {
-          transform: scale(1.05);
-        }
-        .src-poster-img {
-          transition: transform 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-        }
-
-        /* Gradient overlay — fades poster into card body */
-        .src-poster-overlay {
-          position: absolute;
-          inset: 0;
-          background: linear-gradient(
-            to bottom,
-            transparent 40%,
-            color-mix(in srgb, var(--color-surface) 25%, transparent) 65%,
-            var(--color-surface) 100%
-          );
-          z-index: 1;
-        }
-
-        /* Type badge — frosted glass on poster */
-        .src-type-badge {
-          position: absolute;
-          top: 0.5rem;
-          left: 0.5rem;
-          z-index: 3;
-          display: inline-flex;
-          align-items: center;
-          gap: 0.25rem;
-          padding: 0.2rem 0.45rem 0.2rem 0.35rem;
-          border-radius: var(--radius-sm);
-          border: 1px solid color-mix(in srgb, var(--color-border) 70%, transparent);
-          background-color: color-mix(in srgb, var(--color-background) 80%, transparent);
-          backdrop-filter: blur(8px);
-          -webkit-backdrop-filter: blur(8px);
-          font-size: 0.6rem;
-          font-family: var(--font-mono);
-          font-weight: 700;
-          letter-spacing: 0.1em;
-          text-transform: uppercase;
-          white-space: nowrap;
-          color: var(--color-text-secondary);
-        }
-        .src-type-badge--movie {
-          color: var(--color-accent);
-          border-color: color-mix(in srgb, var(--color-accent) 35%, transparent);
-        }
-
-        /* Card body */
-        .src-body {
-          padding: 0.6rem 0.7rem 0.75rem;
-        }
-
-        /* Title */
-        .src-title {
-          font-family: var(--font-display), Georgia, serif;
-          font-size: 0.8rem;
-          font-weight: 600;
-          letter-spacing: -0.01em;
-          line-height: 1.35;
-          color: var(--color-text-primary);
-          display: -webkit-box;
-          -webkit-box-orient: vertical;
-          -webkit-line-clamp: 2;
-          overflow: hidden;
-          margin-bottom: 0.25rem;
-          transition: color 0.18s ease;
-        }
-        .src-card:hover .src-title {
-          color: #ffffff;
-        }
-
-        /* Year */
-        .src-year {
-          font-size: 0.7rem;
-          font-family: var(--font-mono);
-          color: var(--color-text-muted);
-          letter-spacing: 0.04em;
-          margin-bottom: 0.4rem;
-        }
-
-        /* Overview */
-        .src-overview {
-          font-size: 0.7rem;
-          line-height: 1.5;
-          color: var(--color-text-muted);
-          display: -webkit-box;
-          -webkit-box-orient: vertical;
-          -webkit-line-clamp: 2;
-          overflow: hidden;
-        }
-
-        /* Accent stripe — sweeps in on hover */
-        .src-accent-stripe {
-          position: absolute;
-          bottom: 0;
-          left: 0;
-          right: 0;
-          height: 2px;
-          background: linear-gradient(
-            90deg,
-            var(--color-accent) 0%,
-            color-mix(in srgb, var(--color-accent) 40%, transparent) 100%
-          );
-          opacity: 0;
-          transition: opacity 0.22s ease;
-        }
-        .src-card:hover .src-accent-stripe {
-          opacity: 1;
-        }
-
-        /* No-poster placeholder */
-        .src-no-poster {
-          position: absolute;
-          inset: 0;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          gap: 0.5rem;
-          background-color: var(--color-surface-raised);
-        }
-        .src-no-poster-label {
-          font-size: 0.6rem;
-          font-family: var(--font-mono);
-          text-transform: uppercase;
-          letter-spacing: 0.12em;
-          color: var(--color-text-muted);
-        }
-      `}</style>
-
-      <Link href={href} className="src-card" aria-label={`${title} (${year}) \u2014 ${isTV ? "TV Show" : "Movie"}`}>
-        {/* Poster */}
-        <div className="src-poster-wrap">
-          {posterUrl ? (
-            <Image
-              src={posterUrl}
-              alt={`${title} poster`}
-              fill
-              sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 20vw"
-              className="object-cover src-poster-img"
-              priority={false}
-            />
-          ) : (
-            <div className="src-no-poster" aria-hidden="true">
-              {/* Film strip icon */}
-              <svg
-                width="28"
-                height="28"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                style={{ color: "var(--color-text-muted)", opacity: 0.5 }}
-                aria-hidden="true"
-              >
-                <rect x="2" y="4" width="20" height="16" rx="2" />
-                <path d="M7 4v16M17 4v16M2 12h20M2 8h5M17 8h5M2 16h5M17 16h5" />
-              </svg>
-              <span className="src-no-poster-label">No poster</span>
-            </div>
+        {/* Type badge — frosted glass on poster */}
+        <Badge
+          variant="outline"
+          className={cn(
+            "absolute top-2 left-2 z-20",
+            "backdrop-blur-md bg-background/80 border-border/60",
+            "text-[10px] font-mono font-bold tracking-widest uppercase",
+            !isTV && "text-primary border-primary/40"
           )}
+          aria-hidden="true"
+        >
+          {isTV ? <Tv className="size-2" /> : <Film className="size-2" />}
+          {isTV ? "TV" : "Film"}
+        </Badge>
+      </div>
 
-          {/* Gradient overlay */}
-          <div className="src-poster-overlay" aria-hidden="true" />
-
-          {/* Type badge */}
-          <span
-            className={`src-type-badge${isTV ? "" : " src-type-badge--movie"}`}
-            aria-hidden="true"
-          >
-            {isTV ? (
-              /* TV icon */
-              <svg width="8" height="8" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-                <path d="M2.5 2A1.5 1.5 0 001 3.5v7A1.5 1.5 0 002.5 12h11a1.5 1.5 0 001.5-1.5v-7A1.5 1.5 0 0013.5 2h-11zm0 9.5h11a.5.5 0 00.5-.5v-7a.5.5 0 00-.5-.5h-11a.5.5 0 00-.5.5v7a.5.5 0 00.5.5zM5.5 13a.5.5 0 000 1h5a.5.5 0 000-1h-5z" />
-              </svg>
-            ) : (
-              /* Film icon */
-              <svg width="8" height="8" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-                <path d="M0 1a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H1a1 1 0 01-1-1V1zm0 5.5a.5.5 0 01.5-.5h2a.5.5 0 010 1h-2a.5.5 0 01-.5-.5zm13 0a.5.5 0 01.5-.5h2a.5.5 0 010 1h-2a.5.5 0 01-.5-.5zM0 9a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H1a1 1 0 01-1-1V9zm0 4.5a.5.5 0 01.5-.5h2a.5.5 0 010 1h-2a.5.5 0 01-.5-.5zm13 0a.5.5 0 01.5-.5h2a.5.5 0 010 1h-2a.5.5 0 01-.5-.5z" />
-              </svg>
-            )}
-            {isTV ? "TV" : "Film"}
-          </span>
-        </div>
-
-        {/* Body */}
-        <div className="src-body">
-          <p className="src-title">{title}</p>
-          <p className="src-year">{year}</p>
-          {result.overview && (
-            <p className="src-overview">{result.overview}</p>
+      {/* Body */}
+      <div className="px-2.5 py-2.5 flex flex-col gap-1">
+        <p
+          className={cn(
+            "text-[0.8rem] font-semibold font-sans leading-snug text-foreground",
+            "line-clamp-2 group-hover:text-white transition-colors duration-150"
           )}
-        </div>
+        >
+          {title}
+        </p>
+        <p className="text-[0.7rem] font-mono text-muted-foreground tracking-wide">
+          {year}
+        </p>
+        {result.overview && (
+          <p className="text-[0.7rem] leading-relaxed text-muted-foreground line-clamp-2">
+            {result.overview}
+          </p>
+        )}
+      </div>
 
-        {/* Hover accent stripe */}
-        <div className="src-accent-stripe" aria-hidden="true" />
-      </Link>
-    </>
+      {/* Hover accent stripe */}
+      <div
+        className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-primary to-primary/30 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+        aria-hidden="true"
+      />
+    </Link>
   );
 }
 
@@ -292,174 +152,103 @@ function FeaturedResult({ result }: { result: TmdbSearchResult }) {
   const isTV = result.media_type === "tv";
   const href = `/content/${result.media_type}/${result.id}`;
   const posterUrl = getTmdbImageUrl(result.poster_path, "w500");
+  const backdropUrl = getTmdbImageUrl(result.backdrop_path, "w780");
 
   return (
-    <>
-      <style>{`
-        .src-featured {
-          display: grid;
-          grid-template-columns: 200px 1fr;
-          gap: 2rem;
-          padding: 1.5rem;
-          border: 1px solid var(--color-border);
-          border-radius: var(--radius-md);
-          background-color: var(--color-surface);
-          text-decoration: none;
-          cursor: pointer;
-          transition: border-color 0.25s ease, box-shadow 0.25s ease;
-          position: relative;
-          overflow: hidden;
-          margin-bottom: 2.5rem;
-        }
-        .src-featured::before {
-          content: '';
-          position: absolute;
-          left: 0;
-          top: 0;
-          bottom: 0;
-          width: 3px;
-          background: linear-gradient(to bottom, var(--color-accent), transparent);
-        }
-        .src-featured:hover {
-          border-color: color-mix(in srgb, var(--color-accent) 40%, var(--color-border));
-          box-shadow: 0 8px 32px -8px rgba(0, 0, 0, 0.6);
-        }
-        .src-featured:focus-visible {
-          border-color: var(--color-accent);
-          box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-accent) 35%, transparent);
-          outline: none;
-        }
-        @media (max-width: 640px) {
-          .src-featured {
-            grid-template-columns: 140px 1fr;
-            gap: 1.25rem;
-            padding: 1.25rem;
-          }
-        }
-
-        /* Featured poster */
-        .src-featured-poster {
-          position: relative;
-          width: 100%;
-          aspect-ratio: 2 / 3;
-          border-radius: calc(var(--radius-md) - 4px);
-          overflow: hidden;
-          background-color: var(--color-surface-raised);
-        }
-        .src-featured:hover .src-featured-poster-img {
-          transform: scale(1.04);
-        }
-        .src-featured-poster-img {
-          transition: transform 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-        }
-
-        /* Featured metadata */
-        .src-featured-meta {
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          gap: 0.5rem;
-          min-width: 0;
-        }
-        .src-featured-label {
-          display: inline-flex;
-          align-items: center;
-          gap: 0.375rem;
-          font-size: 0.65rem;
-          font-family: var(--font-mono);
-          font-weight: 700;
-          letter-spacing: 0.12em;
-          text-transform: uppercase;
-          color: var(--color-text-muted);
-        }
-        .src-featured-label--accent {
-          color: var(--color-accent);
-        }
-        .src-featured-title {
-          font-family: var(--font-display), Georgia, serif;
-          font-size: 1.5rem;
-          font-weight: 700;
-          letter-spacing: -0.02em;
-          line-height: 1.25;
-          color: var(--color-text-primary);
-          display: -webkit-box;
-          -webkit-box-orient: vertical;
-          -webkit-line-clamp: 2;
-          overflow: hidden;
-          transition: color 0.18s ease;
-        }
-        .src-featured:hover .src-featured-title {
-          color: #ffffff;
-        }
-        .src-featured-overview {
-          font-size: 0.8125rem;
-          line-height: 1.6;
-          color: var(--color-text-secondary);
-          display: -webkit-box;
-          -webkit-box-orient: vertical;
-          -webkit-line-clamp: 4;
-          overflow: hidden;
-        }
-
-        /* No-poster in featured */
-        .src-featured-no-poster {
-          position: absolute;
-          inset: 0;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          gap: 0.5rem;
-          background-color: var(--color-surface-raised);
-        }
-      `}</style>
-
-      <Link href={href} className="src-featured" aria-label={`${title} (${year}) \u2014 ${isTV ? "TV Show" : "Movie"}`}>
-        {/* Poster */}
-        <div className="src-featured-poster">
-          {posterUrl ? (
-            <Image
-              src={posterUrl}
-              alt={`${title} poster`}
-              fill
-              sizes="200px"
-              className="object-cover src-featured-poster-img"
-              priority
-            />
-          ) : (
-            <div className="src-featured-no-poster" aria-hidden="true">
-              <svg
-                width="36"
-                height="36"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                style={{ color: "var(--color-text-muted)", opacity: 0.5 }}
-                aria-hidden="true"
-              >
-                <rect x="2" y="4" width="20" height="16" rx="2" />
-                <path d="M7 4v16M17 4v16M2 12h20M2 8h5M17 8h5M2 16h5M17 16h5" />
-              </svg>
-              <span className="src-no-poster-label">No poster</span>
-            </div>
-          )}
+    <Link
+      href={href}
+      aria-label={`${title} (${year}) — ${isTV ? "TV Show" : "Movie"}`}
+      className={cn(
+        "group relative grid grid-cols-[130px_1fr] sm:grid-cols-[180px_1fr]",
+        "gap-5 sm:gap-8 p-5 sm:p-6 mb-10",
+        "rounded-md overflow-hidden border border-border bg-card",
+        "hover:border-primary/40 hover:shadow-[0_8px_32px_-8px_rgba(0,0,0,0.6)]",
+        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+        "transition-all duration-250 ease-out"
+      )}
+    >
+      {/* Backdrop image — blurred/dimmed behind content */}
+      {backdropUrl && (
+        <div className="absolute inset-0 z-0 overflow-hidden" aria-hidden="true">
+          <Image
+            src={backdropUrl}
+            alt=""
+            fill
+            sizes="100vw"
+            className={cn(
+              "object-cover object-[center_20%]",
+              "opacity-100 saturate-50 brightness-[0.28] blur-sm scale-105",
+              "group-hover:scale-110 group-hover:brightness-[0.32]",
+              "transition-all duration-500 ease-out"
+            )}
+            priority={false}
+          />
+          {/* Left-to-right fade so text stays legible */}
+          <div className="absolute inset-0 bg-gradient-to-r from-card/90 via-card/70 to-card/55" />
         </div>
+      )}
 
-        {/* Metadata */}
-        <div className="src-featured-meta">
-          <span className={`src-featured-label${!isTV ? " src-featured-label--accent" : ""}`}>
-            {year} &middot; {isTV ? "TV Series" : "Film"}
-          </span>
-          <h3 className="src-featured-title">{title}</h3>
-          {result.overview && (
-            <p className="src-featured-overview">{result.overview}</p>
+      {/* Left accent stripe */}
+      <div
+        className="absolute left-0 top-0 bottom-0 w-[3px] bg-gradient-to-b from-primary to-transparent z-10"
+        aria-hidden="true"
+      />
+
+      {/* Poster */}
+      <div
+        className={cn(
+          "relative z-10 w-full aspect-[2/3] rounded-sm overflow-hidden",
+          "bg-muted shadow-[0_8px_24px_-4px_rgba(0,0,0,0.7)]"
+        )}
+      >
+        {posterUrl ? (
+          <Image
+            src={posterUrl}
+            alt={`${title} poster`}
+            fill
+            sizes="180px"
+            className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.04]"
+            priority
+          />
+        ) : (
+          <NoPosterPlaceholder size="lg" />
+        )}
+      </div>
+
+      {/* Metadata */}
+      <div className="relative z-10 flex flex-col justify-center gap-2.5 min-w-0">
+        {/* Type + year label */}
+        <span
+          className={cn(
+            "inline-flex items-center gap-1.5 text-[0.65rem] font-mono font-bold tracking-[0.12em] uppercase",
+            !isTV ? "text-primary" : "text-muted-foreground"
           )}
-        </div>
-      </Link>
-    </>
+        >
+          {isTV ? <Tv className="size-3" /> : <Film className="size-3" />}
+          {year}
+          <span className="text-muted-foreground/40 font-normal">·</span>
+          {isTV ? "TV Series" : "Film"}
+        </span>
+
+        {/* Title */}
+        <h3
+          className={cn(
+            "text-2xl font-bold font-sans leading-tight tracking-tight",
+            "text-foreground group-hover:text-white",
+            "line-clamp-2 transition-colors duration-150"
+          )}
+        >
+          {title}
+        </h3>
+
+        {/* Overview */}
+        {result.overview && (
+          <p className="text-[0.8125rem] leading-relaxed text-muted-foreground line-clamp-4">
+            {result.overview}
+          </p>
+        )}
+      </div>
+    </Link>
   );
 }
 
@@ -484,116 +273,62 @@ function Pagination({
   const prevHref = `/search?q=${encodeURIComponent(query)}&page=${currentPage - 1}`;
   const nextHref = `/search?q=${encodeURIComponent(query)}&page=${currentPage + 1}`;
 
+  const btnBase = cn(
+    "inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-md text-xs font-medium",
+    "border border-border bg-transparent text-muted-foreground",
+    "transition-all duration-150 ease-out"
+  );
+  const btnActive = "hover:border-primary/50 hover:bg-muted hover:text-foreground hover:-translate-y-px focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1";
+  const btnDisabled = "opacity-30 pointer-events-none cursor-not-allowed";
+
   return (
     <>
-      <style>{`
-        .src-pagination-rule {
-          border: none;
-          border-top: 1px solid var(--color-border);
-          margin-top: 3rem;
-          margin-bottom: 0;
-        }
-
-        .src-pagination {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 0.75rem;
-          padding-top: 1.5rem;
-        }
-
-        .src-pg-btn {
-          display: inline-flex;
-          align-items: center;
-          gap: 0.375rem;
-          padding: 0.4rem 0.875rem;
-          border-radius: var(--radius-md);
-          border: 1px solid var(--color-border);
-          background-color: transparent;
-          color: var(--color-text-secondary);
-          font-size: 0.75rem;
-          font-weight: 500;
-          letter-spacing: 0.02em;
-          text-decoration: none;
-          transition:
-            border-color 0.18s ease,
-            background-color 0.18s ease,
-            color 0.18s ease,
-            transform 0.14s ease;
-          cursor: pointer;
-        }
-        .src-pg-btn:hover {
-          border-color: color-mix(in srgb, var(--color-accent) 50%, var(--color-border));
-          background-color: var(--color-surface-raised);
-          color: var(--color-text-primary);
-          transform: translateY(-1px);
-        }
-        .src-pg-btn--disabled {
-          opacity: 0.3;
-          pointer-events: none;
-          cursor: not-allowed;
-        }
-        .src-pg-btn:focus-visible {
-          outline: 2px solid var(--color-accent);
-          outline-offset: 2px;
-        }
-
-        .src-pg-info {
-          font-size: 0.75rem;
-          font-family: var(--font-mono);
-          color: var(--color-text-muted);
-          letter-spacing: 0.05em;
-          user-select: none;
-        }
-        .src-pg-info-current {
-          font-family: var(--font-display), Georgia, serif;
-          font-size: 0.875rem;
-          color: var(--color-accent);
-          font-weight: 700;
-        }
-      `}</style>
-
-      <hr className="src-pagination-rule" />
+      <hr className="mt-12 border-t border-border" />
 
       <nav
-        className="src-pagination"
+        className="flex items-center justify-center gap-3 pt-6"
         aria-label="Search results pagination"
       >
         {hasPrev ? (
-          <Link href={prevHref} className="src-pg-btn" aria-label="Previous page">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <polyline points="15 18 9 12 15 6" />
-            </svg>
+          <Link
+            href={prevHref}
+            className={cn(btnBase, btnActive)}
+            aria-label="Previous page"
+          >
+            <ChevronLeft className="size-3.5" aria-hidden="true" />
             Prev
           </Link>
         ) : (
-          <span className="src-pg-btn src-pg-btn--disabled" aria-disabled="true">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <polyline points="15 18 9 12 15 6" />
-            </svg>
+          <span className={cn(btnBase, btnDisabled)} aria-disabled="true">
+            <ChevronLeft className="size-3.5" aria-hidden="true" />
             Prev
           </span>
         )}
 
-        <span className="src-pg-info" aria-label={`Page ${currentPage} of ${totalPages}`}>
-          <span className="src-pg-info-current">{currentPage}</span>
+        <span
+          className="text-xs font-mono text-muted-foreground tracking-[0.05em] select-none"
+          aria-label={`Page ${currentPage} of ${totalPages}`}
+        >
+          <span className="text-sm font-bold font-sans text-primary">
+            {currentPage}
+          </span>
           {" / "}
           {totalPages}
         </span>
 
         {hasNext ? (
-          <Link href={nextHref} className="src-pg-btn" aria-label="Next page">
+          <Link
+            href={nextHref}
+            className={cn(btnBase, btnActive)}
+            aria-label="Next page"
+          >
             Next
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <polyline points="9 18 15 12 9 6" />
-            </svg>
+            <ChevronRight className="size-3.5" aria-hidden="true" />
           </Link>
         ) : (
-          <span className="src-pg-btn src-pg-btn--disabled" aria-disabled="true">
+          <span className={cn(btnBase, btnDisabled)} aria-disabled="true">
             Next
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <polyline points="9 18 15 12 9 6" />
-            </svg>
+            <ChevronRight className="size-3.5" aria-hidden="true" />
           </span>
         )}
       </nav>
@@ -602,127 +337,61 @@ function Pagination({
 }
 
 // ---------------------------------------------------------------------------
-// Empty state
+// EmptyState
 // ---------------------------------------------------------------------------
 
 function EmptyState({ query }: { query: string }) {
   return (
-    <>
-      <style>{`
-        .src-empty {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          padding: 6rem 1.5rem;
-          text-align: center;
-        }
-        .src-empty-icon-ring {
-          width: 5rem;
-          height: 5rem;
-          border-radius: 9999px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          margin-bottom: 1.5rem;
-          background: radial-gradient(circle, var(--color-surface-raised) 0%, var(--color-surface) 100%);
-          border: 1px solid var(--color-border);
-          box-shadow: 0 0 0 6px color-mix(in srgb, var(--color-border) 35%, transparent);
-        }
-        .src-empty-heading {
-          font-family: var(--font-display), Georgia, serif;
-          font-size: 1.125rem;
-          font-weight: 700;
-          letter-spacing: -0.02em;
-          color: var(--color-text-primary);
-          margin-bottom: 0.5rem;
-        }
-        .src-empty-sub {
-          font-size: 0.875rem;
-          color: var(--color-text-secondary);
-          max-width: 26ch;
-          line-height: 1.55;
-        }
-        .src-empty-query {
-          color: var(--color-accent);
-          font-style: italic;
-        }
-      `}</style>
-
-      <div className="src-empty" role="status" aria-live="polite">
-        <div className="src-empty-icon-ring" aria-hidden="true">
-          <svg
-            width="36"
-            height="36"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            style={{ color: "var(--color-text-muted)" }}
-            aria-hidden="true"
-          >
-            <circle cx="11" cy="11" r="8" />
-            <line x1="21" y1="21" x2="16.65" y2="16.65" />
-            <line x1="8" y1="11" x2="14" y2="11" />
-          </svg>
-        </div>
-        <h3 className="src-empty-heading">
-          No results for{" "}
-          <span className="src-empty-query">&ldquo;{query}&rdquo;</span>
-        </h3>
-        <p className="src-empty-sub">
-          Try a different title, or check your spelling.
-        </p>
+    <div
+      className="flex flex-col items-center justify-center py-24 px-6 text-center"
+      role="status"
+      aria-live="polite"
+    >
+      {/* Icon ring */}
+      <div
+        className={cn(
+          "size-20 rounded-full flex items-center justify-center mb-6",
+          "bg-muted border border-border",
+          "shadow-[0_0_0_6px_hsl(var(--border)/0.35)]"
+        )}
+        aria-hidden="true"
+      >
+        <Search
+          className="size-9 text-muted-foreground"
+          strokeWidth={1}
+          aria-hidden="true"
+        />
       </div>
-    </>
+
+      <h3 className="text-lg font-bold font-sans tracking-tight text-foreground mb-2">
+        No results for{" "}
+        <span className="text-primary italic">&ldquo;{query}&rdquo;</span>
+      </h3>
+      <p className="text-sm text-muted-foreground max-w-[26ch] leading-relaxed">
+        Try a different title, or check your spelling.
+      </p>
+    </div>
   );
 }
 
 // ---------------------------------------------------------------------------
-// Results header
+// ResultsHeader
 // ---------------------------------------------------------------------------
 
 function ResultsHeader({ query, count }: { query: string; count: number }) {
   return (
-    <>
-      <style>{`
-        .src-header {
-          display: flex;
-          align-items: baseline;
-          gap: 0.75rem;
-          margin-bottom: 2rem;
-          padding-bottom: 1rem;
-          border-bottom: 1px solid var(--color-border);
-        }
-        .src-header-title {
-          font-family: var(--font-display), Georgia, serif;
-          font-size: 1.25rem;
-          font-weight: 700;
-          color: var(--color-text-primary);
-        }
-        .src-header-query {
-          color: var(--color-text-primary);
-          font-weight: 700;
-        }
-        .src-header-count {
-          font-size: 0.75rem;
-          font-family: var(--font-mono);
-          color: var(--color-text-muted);
-          letter-spacing: 0.04em;
-        }
-      `}</style>
-      <div className="src-header">
-        <p className="src-header-title">
-          Results for{" "}
-          <span className="src-header-query">&ldquo;{query}&rdquo;</span>
-        </p>
-        <span className="src-header-count" aria-label={`${count} results`}>
-          {count} result{count !== 1 ? "s" : ""}
-        </span>
-      </div>
-    </>
+    <div className="flex items-baseline gap-3 mb-8 pb-4 border-b border-border">
+      <p className="text-xl font-bold font-sans tracking-tight text-foreground">
+        Results for{" "}
+        <span className="text-foreground font-bold">&ldquo;{query}&rdquo;</span>
+      </p>
+      <span
+        className="text-xs font-mono text-muted-foreground tracking-[0.04em]"
+        aria-label={`${count} results`}
+      >
+        {count} result{count !== 1 ? "s" : ""}
+      </span>
+    </div>
   );
 }
 
@@ -749,27 +418,6 @@ export function SearchResults({
 
   return (
     <>
-      <style>{`
-        .src-grid {
-          display: grid;
-          gap: 1.25rem;
-          grid-template-columns: repeat(2, minmax(0, 1fr));
-        }
-        .src-wide {
-          grid-column: span 2;
-        }
-        @media (min-width: 768px) {
-          .src-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-        }
-        @media (min-width: 1024px) {
-          .src-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-          .src-wide { grid-column: span 2; }
-        }
-        @media (min-width: 1280px) {
-          .src-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); }
-        }
-      `}</style>
-
       <ResultsHeader query={query} count={filtered.length} />
 
       {/* Featured first result */}
@@ -777,11 +425,9 @@ export function SearchResults({
 
       {/* Grid of remaining results */}
       {rest.length > 0 && (
-        <div className="src-grid">
-          {rest.map((result, index) => (
-            <div key={`${result.media_type}-${result.id}`} className={index % 4 === 0 ? "src-wide" : ""}>
-              <ResultCard result={result} />
-            </div>
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5">
+          {rest.map((result) => (
+            <ResultCard key={`${result.media_type}-${result.id}`} result={result} />
           ))}
         </div>
       )}

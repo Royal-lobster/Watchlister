@@ -19,6 +19,13 @@ export function extractMultiSelect(
   return properties[key]?.multi_select?.map((o: any) => o.name) ?? [];
 }
 
+export function extractSelect(
+  properties: Record<string, any>,
+  key: string
+): string | null {
+  return properties[key]?.select?.name ?? null;
+}
+
 export function extractUrl(
   properties: Record<string, any>,
   key: string

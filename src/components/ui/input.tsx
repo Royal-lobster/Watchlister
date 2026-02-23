@@ -1,65 +1,21 @@
-import { InputHTMLAttributes, ReactNode, forwardRef } from "react";
+import * as React from "react"
 
-// ---------------------------------------------------------------------------
-// Input — styled dark input, extends all native <input> props
-// No "use client" needed — purely presentational
-// ---------------------------------------------------------------------------
+import { cn } from "@/lib/utils"
 
-interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
-  /** Optional node rendered to the left of the input text */
-  leftIcon?: ReactNode;
-  /** Additional class applied to the outer wrapper div */
-  wrapperClassName?: string;
+function Input({ className, type, ...props }: React.ComponentProps<"input">) {
+  return (
+    <input
+      type={type}
+      data-slot="input"
+      className={cn(
+        "file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
+        "focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]",
+        "aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
+        className
+      )}
+      {...props}
+    />
+  )
 }
 
-export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
-  { leftIcon, wrapperClassName = "", className = "", ...props },
-  ref
-) {
-  return (
-    <div className={["relative flex items-center", wrapperClassName].join(" ")}>
-      {/* Left icon slot */}
-      {leftIcon && (
-        <span
-          className={[
-            "absolute left-3",
-            "flex items-center justify-center",
-            "text-(--color-text-muted)",
-            "pointer-events-none select-none",
-            "size-4",
-          ].join(" ")}
-          aria-hidden="true"
-        >
-          {leftIcon}
-        </span>
-      )}
-
-      <input
-        ref={ref}
-        className={[
-          // Layout
-          "w-full h-9",
-          leftIcon ? "pl-9 pr-3" : "px-3",
-          // Appearance
-          "bg-(--color-surface)",
-          "border border-(--color-border)",
-          "rounded-(--radius-md)",
-          "text-sm font-sans text-(--color-text-primary)",
-          "placeholder:text-(--color-text-muted)",
-          // Transition
-          "transition-[border-color,box-shadow] duration-150 ease-out",
-          // Focus — red ring matching accent
-          "outline-none",
-          "focus:border-(--color-accent)",
-          "focus:ring-2 focus:ring-(--color-accent)/25",
-          // Disabled
-          "disabled:opacity-40 disabled:cursor-not-allowed",
-          // File input reset
-          "file:border-0 file:bg-transparent file:text-sm file:font-medium",
-          className,
-        ].join(" ")}
-        {...props}
-      />
-    </div>
-  );
-});
+export { Input }

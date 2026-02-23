@@ -8,6 +8,8 @@ import {
   useTransition,
 } from "react";
 import { useRouter } from "next/navigation";
+import { Search, Loader2, X } from "lucide-react";
+import { cn } from "@/lib/utils";
 import { SearchSuggestion } from "./search-suggestion";
 
 // ---------------------------------------------------------------------------
@@ -25,51 +27,6 @@ interface Suggestion {
 interface SearchBarProps {
   initialValue?: string;
   placeholder?: string;
-}
-
-// ---------------------------------------------------------------------------
-// Inline SVG icons (no external dep)
-// ---------------------------------------------------------------------------
-
-function SearchIcon({ className = "" }: { className?: string }) {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="16"
-      height="16"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className={className}
-      aria-hidden="true"
-    >
-      <circle cx="11" cy="11" r="8" />
-      <line x1="21" y1="21" x2="16.65" y2="16.65" />
-    </svg>
-  );
-}
-
-function SpinnerIcon() {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="14"
-      height="14"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2.5"
-      strokeLinecap="round"
-      aria-hidden="true"
-      style={{ animation: "spin 0.7s linear infinite" }}
-    >
-      <path d="M21 12a9 9 0 1 1-6.219-8.56" />
-      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
-    </svg>
-  );
 }
 
 // ---------------------------------------------------------------------------
@@ -97,7 +54,6 @@ export function SearchBar({
 
   // ── Fetch suggestions (debounced 300ms) ──────────────────────────────────
   const fetchSuggestions = useCallback(async (q: string) => {
-    // Cancel any in-flight request
     if (abortRef.current) abortRef.current.abort();
 
     if (q.length < 2) {
@@ -112,10 +68,9 @@ export function SearchBar({
     setIsFetching(true);
 
     try {
-      const res = await fetch(
-        `/api/suggestions?q=${encodeURIComponent(q)}`,
-        { signal: controller.signal }
-      );
+      const res = await fetch(`/api/suggestions?q=${encodeURIComponent(q)}`, {
+        signal: controller.signal,
+      });
       if (!res.ok) throw new Error("fetch failed");
       const data = await res.json();
       setSuggestions(data.results ?? []);
@@ -224,7 +179,7 @@ export function SearchBar({
     item?.scrollIntoView({ block: "nearest" });
   }, [highlightedIndex]);
 
-  // ── Cleanup debounce on unmount ───────────────────────────────────────────
+  // ── Cleanup on unmount ────────────────────────────────────────────────────
   useEffect(() => {
     return () => {
       if (debounceRef.current) clearTimeout(debounceRef.current);
@@ -242,35 +197,28 @@ export function SearchBar({
 
   return (
     <div ref={containerRef} className="relative w-full">
-      {/* ── Search form ── */}
+      {/* Search form */}
       <form onSubmit={handleSubmit} role="search" aria-label="Search">
         <div
-          className={[
-            // Container that holds the border/focus ring
-            "relative flex items-center",
-            "bg-(--color-surface)",
-            "border border-(--color-border)",
-            // When open, square off the bottom corners so panel connects flush
-            showPanel ? "rounded-t-(--radius-sm)" : "rounded-(--radius-sm)",
-            "transition-[border-color,box-shadow,border-radius] duration-150 ease-out",
-            // Focus-within ring — red accent as specified
-            "focus-within:border-(--color-accent)",
-            "focus-within:ring-2 focus-within:ring-(--color-accent)/25",
-          ].join(" ")}
+          className={cn(
+            "relative flex items-center bg-background border border-border transition-[border-color,box-shadow,border-radius] duration-150 ease-out",
+            "focus-within:border-ring focus-within:ring-2 focus-within:ring-ring/25",
+            showPanel ? "rounded-t-md" : "rounded-md"
+          )}
         >
           {/* Left search icon / spinner */}
           <span
-            className={[
-              "absolute left-3 flex items-center justify-center",
-              "pointer-events-none select-none",
-              "transition-colors duration-200",
-              isFetching
-                ? "text-(--color-accent)"
-                : "text-(--color-text-muted)",
-            ].join(" ")}
+            className={cn(
+              "absolute left-3 flex items-center justify-center pointer-events-none select-none transition-colors duration-200",
+              isFetching ? "text-primary" : "text-muted-foreground"
+            )}
             aria-hidden="true"
           >
-            {isFetching ? <SpinnerIcon /> : <SearchIcon />}
+            {isFetching ? (
+              <Loader2 className="size-4 animate-spin" />
+            ) : (
+              <Search className="size-4" />
+            )}
           </span>
 
           {/* Input */}
@@ -296,21 +244,16 @@ export function SearchBar({
             }
             aria-expanded={showPanel}
             role="combobox"
-            className={[
-              // Layout
-              "w-full h-11 pl-9 pr-10",
-              // Appearance — transparent bg so wrapper controls the look
-              "bg-transparent",
-              "text-sm font-sans text-(--color-text-primary)",
-              "placeholder:text-(--color-text-muted)",
-              // Clear browser search-input decorations
+            className={cn(
+              "w-full h-11 pl-9 pr-10 bg-transparent",
+              "text-sm font-sans text-foreground placeholder:text-muted-foreground",
               "outline-none",
               "[&::-webkit-search-cancel-button]:hidden",
-              "[&::-webkit-search-decoration]:hidden",
-            ].join(" ")}
+              "[&::-webkit-search-decoration]:hidden"
+            )}
           />
 
-          {/* Right clear button — appears when there's a query */}
+          {/* Clear button */}
           {query.length > 0 && (
             <button
               type="button"
@@ -322,63 +265,37 @@ export function SearchBar({
                 inputRef.current?.focus();
               }}
               aria-label="Clear search"
-              className={[
-                "absolute right-3",
-                "flex items-center justify-center",
+              className={cn(
+                "absolute right-3 flex items-center justify-center",
                 "size-5 rounded-full",
-                "bg-(--color-surface-raised)",
-                "text-(--color-text-muted)",
-                "hover:bg-(--color-surface-hover) hover:text-(--color-text-primary)",
-                "transition-colors duration-100",
-                "cursor-pointer",
-              ].join(" ")}
+                "bg-muted text-muted-foreground",
+                "hover:bg-accent hover:text-accent-foreground",
+                "transition-colors duration-100 cursor-pointer"
+              )}
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="10"
-                height="10"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2.5"
-                strokeLinecap="round"
-                aria-hidden="true"
-              >
-                <line x1="18" y1="6" x2="6" y2="18" />
-                <line x1="6" y1="6" x2="18" y2="18" />
-              </svg>
+              <X className="size-2.5" aria-hidden="true" />
             </button>
           )}
         </div>
       </form>
 
-      {/* ── Suggestions panel ── */}
+      {/* Suggestions panel */}
       {showPanel && (
         <ul
           ref={panelRef}
           id="search-suggestions"
           role="listbox"
           aria-label="Search suggestions"
-          className={[
-            // Positioning — flush with the input
+          className={cn(
             "absolute top-full left-0 right-0 z-50",
-            // Appearance
-            "bg-(--color-surface)",
-            "border border-(--color-border) border-t-0",
-            "rounded-b-(--radius-sm)",
-            // Shadow
-            "shadow-[var(--shadow-modal)]",
-            // Scroll safety
-            "overflow-y-auto",
-            "max-h-[360px]",
-            // Thin top separator that visually completes the input border
-            "before:block before:h-px before:w-full before:bg-(--color-border)",
-          ].join(" ")}
+            "bg-card border border-border border-t-0 rounded-b-md",
+            "shadow-lg overflow-y-auto max-h-[360px]"
+          )}
         >
-          {/* Top hairline — subtle visual break between input and results */}
+          {/* Top hairline separator between input and results */}
           <li
             aria-hidden="true"
-            className="block h-px w-full bg-(--color-border-subtle)"
+            className="block h-px w-full bg-border"
           />
 
           {suggestions.map((s, i) => (
@@ -400,7 +317,7 @@ export function SearchBar({
               {/* Thin separator between rows (not after last) */}
               {i < suggestions.length - 1 && (
                 <div
-                  className="mx-3 h-px bg-(--color-border-subtle)"
+                  className="mx-3 h-px bg-border/50"
                   aria-hidden="true"
                 />
               )}
@@ -410,26 +327,21 @@ export function SearchBar({
           {/* Footer hint */}
           <li
             aria-hidden="true"
-            className={[
-              "flex items-center justify-between",
-              "px-3 py-2",
-              "border-t border-(--color-border-subtle)",
-              "mt-1",
-            ].join(" ")}
+            className="flex items-center justify-between px-3 py-2 border-t border-border/50 mt-1"
           >
-            <span className="text-[10px] text-(--color-text-muted) tracking-wide">
+            <span className="text-[10px] text-muted-foreground tracking-wide">
               {suggestions.length} result{suggestions.length !== 1 ? "s" : ""}
             </span>
-            <span className="flex items-center gap-2 text-[10px] text-(--color-text-muted)">
-              <kbd className="px-1 py-0.5 rounded bg-(--color-surface-raised) border border-(--color-border) font-mono text-[9px]">
+            <span className="flex items-center gap-2 text-[10px] text-muted-foreground">
+              <kbd className="px-1 py-0.5 rounded bg-muted border border-border font-mono text-[9px]">
                 ↑↓
               </kbd>
               <span>navigate</span>
-              <kbd className="px-1 py-0.5 rounded bg-(--color-surface-raised) border border-(--color-border) font-mono text-[9px]">
+              <kbd className="px-1 py-0.5 rounded bg-muted border border-border font-mono text-[9px]">
                 ↵
               </kbd>
               <span>select</span>
-              <kbd className="px-1 py-0.5 rounded bg-(--color-surface-raised) border border-(--color-border) font-mono text-[9px]">
+              <kbd className="px-1 py-0.5 rounded bg-muted border border-border font-mono text-[9px]">
                 esc
               </kbd>
               <span>close</span>
