@@ -16,13 +16,15 @@ export default function DashboardLoading() {
       </div>
 
       {/* Grid skeleton */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
         {Array.from({ length: SKELETON_COUNT }, (_, i) => (
-          <div key={i} aria-hidden="true">
-            <Skeleton className="aspect-[2/3] rounded-md" />
-            <div className="p-2.5 space-y-1.5">
-              <Skeleton className="h-3 w-full rounded" />
-              <Skeleton className="h-3 w-3/5 rounded" />
+          <div key={i} className="rounded-md border border-border bg-card" aria-hidden="true">
+            <Skeleton className="w-full aspect-video rounded-t-md rounded-b-none" />
+            <div className="px-3 pb-3 pt-2">
+              <div className="pl-24 space-y-1.5 min-h-[3.5rem]">
+                <Skeleton className="h-3 w-full rounded" />
+                <Skeleton className="h-2.5 w-2/5 rounded" />
+              </div>
             </div>
           </div>
         ))}

@@ -5,7 +5,6 @@ import Image from "next/image";
 import { Film, Tv, Trash2, Loader2 } from "lucide-react";
 import { useAction } from "next-safe-action/hooks";
 import { archiveFromWatchlistAction } from "@/actions/watchlist";
-import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
 interface NotionContentCardProps {
@@ -68,7 +67,7 @@ export function NotionContentCard({
 
   return (
     <div
-      className="relative cursor-pointer rounded-md overflow-hidden border border-border bg-card transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md outline-none focus-visible:ring-2 focus-visible:ring-ring"
+      className="relative cursor-pointer rounded-md border border-border bg-card transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md outline-none focus-visible:ring-2 focus-visible:ring-ring"
       role="button"
       tabIndex={0}
       aria-label={`Open ${title} in Notion`}
@@ -77,51 +76,28 @@ export function NotionContentCard({
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {/* Poster area */}
-      <div className="relative w-full aspect-[2/3] overflow-hidden bg-muted">
+      {/* Backdrop — poster as cover image */}
+      <div className="relative w-full aspect-video overflow-hidden rounded-t-md">
         {posterUrl ? (
           <Image
             src={posterUrl}
-            alt={`${title} poster`}
+            alt=""
             fill
-            sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 20vw"
-            className="object-cover transition-transform duration-500"
-            style={{ transform: isHovered ? "scale(1.04)" : "scale(1)" }}
+            sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, 25vw"
+            className="object-cover brightness-[0.6]"
+            aria-hidden="true"
             priority={false}
           />
         ) : (
-          /* Placeholder when no poster */
-          <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-muted">
-            <Film className="size-8 text-muted-foreground" aria-hidden="true" />
-            <span className="text-[10px] font-mono tracking-wider uppercase text-muted-foreground">
-              No poster
-            </span>
-          </div>
+          <div className="absolute inset-0 bg-muted" aria-hidden="true" />
         )}
 
-        {/* Gradient overlay */}
-        <div
-          className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-card/80 z-[1]"
-          aria-hidden="true"
-        />
-
-        {/* Type pill — top-left */}
-        <span className="absolute top-2 left-2 z-10 inline-flex items-center gap-1 px-1.5 py-0.5 rounded-sm bg-background/80 backdrop-blur-sm text-[10px] font-medium uppercase tracking-wide text-muted-foreground">
-          {isTV ? (
-            <Tv className="size-2.5" aria-hidden="true" />
-          ) : (
-            <Film className="size-2.5" aria-hidden="true" />
-          )}
-          {mediaType}
-        </span>
-
-        {/* Archive button — top-right, visible on hover */}
+        {/* Archive button — top-right */}
         <button
           type="button"
           className={cn(
-            "absolute top-2 right-2 z-10 size-8 rounded-md bg-background/80 backdrop-blur-sm border border-border flex items-center justify-center text-muted-foreground hover:text-destructive transition-colors",
-            isHovered || archiving ? "opacity-100" : "opacity-0",
-            archiving && "cursor-not-allowed opacity-50"
+            "absolute top-2 right-2 z-10 size-7 rounded-md bg-background/80 backdrop-blur-sm border border-border flex items-center justify-center text-muted-foreground hover:text-destructive transition-colors",
+            isHovered || archiving ? "opacity-100" : "opacity-0"
           )}
           onClick={handleArchive}
           disabled={archiving}
@@ -129,29 +105,46 @@ export function NotionContentCard({
           aria-busy={archiving}
         >
           {archiving ? (
-            <Loader2 className="size-3.5 animate-spin" aria-hidden="true" />
+            <Loader2 className="size-3 animate-spin" aria-hidden="true" />
           ) : (
-            <Trash2 className="size-3.5" aria-hidden="true" />
+            <Trash2 className="size-3" aria-hidden="true" />
           )}
         </button>
       </div>
 
-      {/* Body */}
-      <div className="p-2.5">
-        <p className="text-[0.8125rem] font-semibold leading-snug line-clamp-2 text-foreground mb-1">
-          {title}
-        </p>
-        <div className="flex flex-wrap gap-1">
-          {genres.slice(0, 3).map((genre) => (
-            <Badge key={genre} variant="secondary" className="text-[10px]">
-              {genre}
-            </Badge>
-          ))}
-          {genres.length > 3 && (
-            <Badge variant="secondary" className="text-[10px]">
-              +{genres.length - 3}
-            </Badge>
+      {/* Info section */}
+      <div className="relative px-3 pb-3 pt-2">
+        {/* Floating poster — overlaps backdrop */}
+        <div className="absolute -top-10 left-3 w-20 aspect-[2/3] rounded-sm overflow-hidden shadow-xl border border-border/60 z-10">
+          {posterUrl ? (
+            <Image
+              src={posterUrl}
+              alt={`${title} poster`}
+              fill
+              sizes="160px"
+              quality={90}
+              className="object-cover"
+              priority={false}
+            />
+          ) : (
+            <div className="absolute inset-0 bg-muted flex items-center justify-center">
+              {isTV ? (
+                <Tv className="size-4 text-muted-foreground" aria-hidden="true" />
+              ) : (
+                <Film className="size-4 text-muted-foreground" aria-hidden="true" />
+              )}
+            </div>
           )}
+        </div>
+
+        {/* Text — shifted right of poster */}
+        <div className="pl-24 min-h-20">
+          <p className="text-[0.8125rem] font-semibold leading-snug line-clamp-2 text-foreground">
+            {title}
+          </p>
+          <span className="mt-0.5 inline-block text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
+            {isTV ? "TV Series" : "Film"}
+          </span>
         </div>
       </div>
     </div>
