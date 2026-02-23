@@ -44,7 +44,7 @@ function ResultCard({ result }: { result: TmdbSearchResult }) {
         .src-card {
           position: relative;
           display: block;
-          border-radius: var(--radius-lg);
+          border-radius: var(--radius-md);
           overflow: hidden;
           border: 1px solid var(--color-border);
           background-color: var(--color-surface);
@@ -133,6 +133,7 @@ function ResultCard({ result }: { result: TmdbSearchResult }) {
 
         /* Title */
         .src-title {
+          font-family: var(--font-display), Georgia, serif;
           font-size: 0.8rem;
           font-weight: 600;
           letter-spacing: -0.01em;

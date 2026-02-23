@@ -251,7 +251,7 @@ export function SearchBar({
             "bg-(--color-surface)",
             "border border-(--color-border)",
             // When open, square off the bottom corners so panel connects flush
-            showPanel ? "rounded-t-(--radius-md)" : "rounded-(--radius-md)",
+            showPanel ? "rounded-t-(--radius-sm)" : "rounded-(--radius-sm)",
             "transition-[border-color,box-shadow,border-radius] duration-150 ease-out",
             // Focus-within ring — red accent as specified
             "focus-within:border-(--color-accent)",
@@ -365,7 +365,7 @@ export function SearchBar({
             // Appearance
             "bg-(--color-surface)",
             "border border-(--color-border) border-t-0",
-            "rounded-b-(--radius-md)",
+            "rounded-b-(--radius-sm)",
             // Shadow
             "shadow-[var(--shadow-modal)]",
             // Scroll safety
