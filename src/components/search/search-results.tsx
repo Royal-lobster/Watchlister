@@ -20,7 +20,7 @@ interface SearchResultsProps {
 
 function getYear(result: TmdbSearchResult): string {
   const raw = result.release_date ?? result.first_air_date ?? "";
-  return raw ? raw.slice(0, 4) : "—";
+  return raw ? raw.slice(0, 4) : "\u2014";
 }
 
 function getTitle(result: TmdbSearchResult): string {
@@ -209,7 +209,7 @@ function ResultCard({ result }: { result: TmdbSearchResult }) {
         }
       `}</style>
 
-      <Link href={href} className="src-card" aria-label={`${title} (${year}) — ${isTV ? "TV Show" : "Movie"}`}>
+      <Link href={href} className="src-card" aria-label={`${title} (${year}) \u2014 ${isTV ? "TV Show" : "Movie"}`}>
         {/* Poster */}
         <div className="src-poster-wrap">
           {posterUrl ? (
@@ -283,6 +283,187 @@ function ResultCard({ result }: { result: TmdbSearchResult }) {
 }
 
 // ---------------------------------------------------------------------------
+// FeaturedResult — large horizontal card for first result
+// ---------------------------------------------------------------------------
+
+function FeaturedResult({ result }: { result: TmdbSearchResult }) {
+  const title = getTitle(result);
+  const year = getYear(result);
+  const isTV = result.media_type === "tv";
+  const href = `/content/${result.media_type}/${result.id}`;
+  const posterUrl = getTmdbImageUrl(result.poster_path, "w500");
+
+  return (
+    <>
+      <style>{`
+        .src-featured {
+          display: grid;
+          grid-template-columns: 200px 1fr;
+          gap: 2rem;
+          padding: 1.5rem;
+          border: 1px solid var(--color-border);
+          border-radius: var(--radius-md);
+          background-color: var(--color-surface);
+          text-decoration: none;
+          cursor: pointer;
+          transition: border-color 0.25s ease, box-shadow 0.25s ease;
+          position: relative;
+          overflow: hidden;
+          margin-bottom: 2.5rem;
+        }
+        .src-featured::before {
+          content: '';
+          position: absolute;
+          left: 0;
+          top: 0;
+          bottom: 0;
+          width: 3px;
+          background: linear-gradient(to bottom, var(--color-accent), transparent);
+        }
+        .src-featured:hover {
+          border-color: color-mix(in srgb, var(--color-accent) 40%, var(--color-border));
+          box-shadow: 0 8px 32px -8px rgba(0, 0, 0, 0.6);
+        }
+        .src-featured:focus-visible {
+          border-color: var(--color-accent);
+          box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-accent) 35%, transparent);
+          outline: none;
+        }
+        @media (max-width: 640px) {
+          .src-featured {
+            grid-template-columns: 140px 1fr;
+            gap: 1.25rem;
+            padding: 1.25rem;
+          }
+        }
+
+        /* Featured poster */
+        .src-featured-poster {
+          position: relative;
+          width: 100%;
+          aspect-ratio: 2 / 3;
+          border-radius: calc(var(--radius-md) - 4px);
+          overflow: hidden;
+          background-color: var(--color-surface-raised);
+        }
+        .src-featured:hover .src-featured-poster-img {
+          transform: scale(1.04);
+        }
+        .src-featured-poster-img {
+          transition: transform 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        /* Featured metadata */
+        .src-featured-meta {
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          gap: 0.5rem;
+          min-width: 0;
+        }
+        .src-featured-label {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.375rem;
+          font-size: 0.65rem;
+          font-family: var(--font-mono);
+          font-weight: 700;
+          letter-spacing: 0.12em;
+          text-transform: uppercase;
+          color: var(--color-text-muted);
+        }
+        .src-featured-label--accent {
+          color: var(--color-accent);
+        }
+        .src-featured-title {
+          font-family: var(--font-display), Georgia, serif;
+          font-size: 1.5rem;
+          font-weight: 700;
+          letter-spacing: -0.02em;
+          line-height: 1.25;
+          color: var(--color-text-primary);
+          display: -webkit-box;
+          -webkit-box-orient: vertical;
+          -webkit-line-clamp: 2;
+          overflow: hidden;
+          transition: color 0.18s ease;
+        }
+        .src-featured:hover .src-featured-title {
+          color: #ffffff;
+        }
+        .src-featured-overview {
+          font-size: 0.8125rem;
+          line-height: 1.6;
+          color: var(--color-text-secondary);
+          display: -webkit-box;
+          -webkit-box-orient: vertical;
+          -webkit-line-clamp: 4;
+          overflow: hidden;
+        }
+
+        /* No-poster in featured */
+        .src-featured-no-poster {
+          position: absolute;
+          inset: 0;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          gap: 0.5rem;
+          background-color: var(--color-surface-raised);
+        }
+      `}</style>
+
+      <Link href={href} className="src-featured" aria-label={`${title} (${year}) \u2014 ${isTV ? "TV Show" : "Movie"}`}>
+        {/* Poster */}
+        <div className="src-featured-poster">
+          {posterUrl ? (
+            <Image
+              src={posterUrl}
+              alt={`${title} poster`}
+              fill
+              sizes="200px"
+              className="object-cover src-featured-poster-img"
+              priority
+            />
+          ) : (
+            <div className="src-featured-no-poster" aria-hidden="true">
+              <svg
+                width="36"
+                height="36"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                style={{ color: "var(--color-text-muted)", opacity: 0.5 }}
+                aria-hidden="true"
+              >
+                <rect x="2" y="4" width="20" height="16" rx="2" />
+                <path d="M7 4v16M17 4v16M2 12h20M2 8h5M17 8h5M2 16h5M17 16h5" />
+              </svg>
+              <span className="src-no-poster-label">No poster</span>
+            </div>
+          )}
+        </div>
+
+        {/* Metadata */}
+        <div className="src-featured-meta">
+          <span className={`src-featured-label${!isTV ? " src-featured-label--accent" : ""}`}>
+            {year} &middot; {isTV ? "TV Series" : "Film"}
+          </span>
+          <h3 className="src-featured-title">{title}</h3>
+          {result.overview && (
+            <p className="src-featured-overview">{result.overview}</p>
+          )}
+        </div>
+      </Link>
+    </>
+  );
+}
+
+// ---------------------------------------------------------------------------
 // Pagination
 // ---------------------------------------------------------------------------
 
@@ -306,25 +487,33 @@ function Pagination({
   return (
     <>
       <style>{`
+        .src-pagination-rule {
+          border: none;
+          border-top: 1px solid var(--color-border);
+          margin-top: 3rem;
+          margin-bottom: 0;
+        }
+
         .src-pagination {
           display: flex;
           align-items: center;
           justify-content: center;
           gap: 0.75rem;
-          margin-top: 3rem;
+          padding-top: 1.5rem;
         }
 
         .src-pg-btn {
           display: inline-flex;
           align-items: center;
           gap: 0.375rem;
-          padding: 0.5rem 1rem;
+          padding: 0.4rem 0.875rem;
           border-radius: var(--radius-md);
           border: 1px solid var(--color-border);
-          background-color: var(--color-surface);
+          background-color: transparent;
           color: var(--color-text-secondary);
-          font-size: 0.8125rem;
+          font-size: 0.75rem;
           font-weight: 500;
+          letter-spacing: 0.02em;
           text-decoration: none;
           transition:
             border-color 0.18s ease,
@@ -357,10 +546,14 @@ function Pagination({
           user-select: none;
         }
         .src-pg-info-current {
+          font-family: var(--font-display), Georgia, serif;
+          font-size: 0.875rem;
           color: var(--color-accent);
-          font-weight: 600;
+          font-weight: 700;
         }
       `}</style>
+
+      <hr className="src-pagination-rule" />
 
       <nav
         className="src-pagination"
@@ -437,8 +630,9 @@ function EmptyState({ query }: { query: string }) {
           box-shadow: 0 0 0 6px color-mix(in srgb, var(--color-border) 35%, transparent);
         }
         .src-empty-heading {
-          font-size: 1rem;
-          font-weight: 600;
+          font-family: var(--font-display), Georgia, serif;
+          font-size: 1.125rem;
+          font-weight: 700;
           letter-spacing: -0.02em;
           color: var(--color-text-primary);
           margin-bottom: 0.5rem;
@@ -498,16 +692,19 @@ function ResultsHeader({ query, count }: { query: string; count: number }) {
           display: flex;
           align-items: baseline;
           gap: 0.75rem;
-          margin-bottom: 1.5rem;
+          margin-bottom: 2rem;
+          padding-bottom: 1rem;
+          border-bottom: 1px solid var(--color-border);
         }
         .src-header-title {
-          font-size: 0.875rem;
-          font-weight: 500;
-          color: var(--color-text-secondary);
+          font-family: var(--font-display), Georgia, serif;
+          font-size: 1.25rem;
+          font-weight: 700;
+          color: var(--color-text-primary);
         }
         .src-header-query {
           color: var(--color-text-primary);
-          font-weight: 600;
+          font-weight: 700;
         }
         .src-header-count {
           font-size: 0.75rem;
@@ -548,19 +745,25 @@ export function SearchResults({
     return <EmptyState query={query} />;
   }
 
+  const [featured, ...rest] = filtered;
+
   return (
     <>
       <style>{`
         .src-grid {
           display: grid;
-          gap: 1rem;
+          gap: 1.25rem;
           grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+        .src-wide {
+          grid-column: span 2;
         }
         @media (min-width: 768px) {
           .src-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
         }
         @media (min-width: 1024px) {
           .src-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+          .src-wide { grid-column: span 2; }
         }
         @media (min-width: 1280px) {
           .src-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); }
@@ -569,11 +772,19 @@ export function SearchResults({
 
       <ResultsHeader query={query} count={filtered.length} />
 
-      <div className="src-grid">
-        {filtered.map((result) => (
-          <ResultCard key={`${result.media_type}-${result.id}`} result={result} />
-        ))}
-      </div>
+      {/* Featured first result */}
+      <FeaturedResult result={featured} />
+
+      {/* Grid of remaining results */}
+      {rest.length > 0 && (
+        <div className="src-grid">
+          {rest.map((result, index) => (
+            <div key={`${result.media_type}-${result.id}`} className={index % 4 === 0 ? "src-wide" : ""}>
+              <ResultCard result={result} />
+            </div>
+          ))}
+        </div>
+      )}
 
       <Pagination
         query={query}
