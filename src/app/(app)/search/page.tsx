@@ -17,13 +17,10 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
           <SearchBar />
         </div>
         <div className="text-center mt-16">
-          <p
-            className="text-2xl font-bold tracking-tight text-(--color-text-muted)/40"
-            style={{ fontFamily: "var(--font-display), Georgia, serif" }}
-          >
+          <p className="text-2xl font-bold tracking-tight text-muted-foreground/40">
             Discover films &amp; series
           </p>
-          <p className="mt-2 text-sm text-(--color-text-muted)">
+          <p className="mt-2 text-sm text-muted-foreground">
             Search for movies and TV shows to add to your watchlist.
           </p>
         </div>

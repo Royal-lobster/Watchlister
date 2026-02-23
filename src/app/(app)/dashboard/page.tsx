@@ -44,24 +44,20 @@ export default async function DashboardPage() {
 
   return (
     <div className="max-w-screen-xl mx-auto px-6 py-12">
-      {/* Editorial header */}
+      {/* Header */}
       <div className="mb-12">
-        <span className="editorial-label">Your Collection</span>
-        <h1
-          className="mt-2 text-4xl sm:text-5xl font-bold tracking-tight"
-          style={{
-            fontFamily: "var(--font-display), Georgia, serif",
-            color: "var(--color-text-primary)",
-          }}
-        >
+        <span className="text-[10px] font-semibold tracking-[0.18em] uppercase text-muted-foreground">
+          Your Collection
+        </span>
+        <h1 className="mt-2 text-4xl sm:text-5xl font-bold tracking-tight text-foreground">
           Watchlist
         </h1>
         <div className="mt-4 flex items-center gap-4">
-          <div className="h-px flex-1 bg-(--color-border)" />
-          <span className="text-[0.625rem] font-semibold tracking-[0.18em] uppercase text-(--color-text-muted)">
+          <div className="h-px flex-1 bg-border" />
+          <span className="text-[0.625rem] font-semibold tracking-[0.18em] uppercase text-muted-foreground">
             {entries.length} {entries.length === 1 ? "title" : "titles"}
           </span>
-          <div className="h-px flex-1 bg-(--color-border)" />
+          <div className="h-px flex-1 bg-border" />
         </div>
       </div>
 
