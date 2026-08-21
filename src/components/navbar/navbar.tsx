@@ -39,7 +39,7 @@ export function Navbar({ workspaceName, workspaceIcon, onLogout }: NavbarProps) 
       >
         <Link
           href="/dashboard"
-          className="text-lg font-bold tracking-wide text-foreground hover:text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
+          className="text-base font-semibold text-foreground hover:text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
         >
           Watchlister
         </Link>

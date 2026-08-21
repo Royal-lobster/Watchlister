@@ -28,8 +28,6 @@ export function AddToWatchlistButton(props: AddToWatchlistButtonProps) {
       }}
       disabled={isExecuting || hasSucceeded}
       variant={hasSucceeded ? "secondary" : "default"}
-      size="lg"
-      className="rounded-full min-w-40"
       aria-busy={isExecuting}
     >
       {isExecuting ? (

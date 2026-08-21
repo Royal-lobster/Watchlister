@@ -20,24 +20,18 @@ interface WatchlistGridProps {
 
 function EmptyState() {
   return (
-    <div className="flex flex-col items-center justify-center py-24 px-6 text-center">
-      <div className="mb-6 relative" aria-hidden="true">
-        <div className="size-20 rounded-full flex items-center justify-center bg-muted border border-border ring-[6px] ring-border/40">
-          <Search className="size-9 text-muted-foreground" aria-hidden="true" />
-        </div>
-      </div>
-
-      <h3 className="text-lg font-semibold tracking-tight text-foreground mb-2">
+    <div className="flex flex-col items-center justify-center py-16 text-center">
+      <Search className="size-8 text-muted-foreground mb-3" aria-hidden="true" />
+      <h3 className="text-base font-semibold text-foreground mb-1">
         Your watchlist is empty
       </h3>
-      <p className="text-[10px] font-semibold tracking-[0.18em] uppercase text-muted-foreground mb-6 max-w-[32ch]">
-        Start curating your collection by searching for movies and shows.
+      <p className="text-sm text-muted-foreground mb-4">
+        Search for movies and shows to add to your watchlist.
       </p>
-
       <Button variant="outline" asChild>
         <Link href="/search">
           <Search className="size-4" aria-hidden="true" />
-          Browse to add content
+          Browse content
         </Link>
       </Button>
     </div>
@@ -50,7 +44,7 @@ export function WatchlistGrid({ entries }: WatchlistGridProps) {
   }
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
       {entries.map((entry) => (
         <NotionContentCard
           key={entry.pageId}

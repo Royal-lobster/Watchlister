@@ -24,7 +24,6 @@ export default async function DashboardPage() {
       .filter((p) => p.object === "page")
       .map((page: any) => {
         const typeValue = extractSelect(page.properties, "Type");
-        // Normalize: "TV Show", "tv", "TV", "TV Series" all → "TV Show", else "Movie"
         const isTV = typeValue
           ? /tv/i.test(typeValue) || /series/i.test(typeValue)
           : false;
@@ -43,22 +42,12 @@ export default async function DashboardPage() {
   }
 
   return (
-    <div className="max-w-screen-xl mx-auto px-6 py-12">
-      {/* Header */}
-      <div className="mb-12">
-        <span className="text-[10px] font-semibold tracking-[0.18em] uppercase text-muted-foreground">
-          Your Collection
-        </span>
-        <h1 className="mt-2 text-4xl sm:text-5xl font-bold tracking-tight text-foreground">
-          Watchlist
-        </h1>
-        <div className="mt-4 flex items-center gap-4">
-          <div className="h-px flex-1 bg-border" />
-          <span className="text-[0.625rem] font-semibold tracking-[0.18em] uppercase text-muted-foreground">
-            {entries.length} {entries.length === 1 ? "title" : "titles"}
-          </span>
-          <div className="h-px flex-1 bg-border" />
-        </div>
+    <div className="max-w-screen-xl mx-auto px-6 py-8">
+      <div className="mb-6">
+        <h1 className="text-2xl font-semibold text-foreground">Watchlist</h1>
+        <p className="text-sm text-muted-foreground mt-1">
+          {entries.length} {entries.length === 1 ? "title" : "titles"}
+        </p>
       </div>
 
       <WatchlistGrid entries={entries} />

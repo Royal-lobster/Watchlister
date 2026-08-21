@@ -12,15 +12,12 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
 
   if (!q) {
     return (
-      <div className="max-w-screen-xl mx-auto px-6 py-12">
+      <div className="max-w-screen-xl mx-auto px-6 py-8">
         <div className="max-w-2xl mx-auto mb-8">
           <SearchBar />
         </div>
-        <div className="text-center mt-16">
-          <p className="text-2xl font-bold tracking-tight text-muted-foreground/40">
-            Discover films &amp; series
-          </p>
-          <p className="mt-2 text-sm text-muted-foreground">
+        <div className="text-center mt-12">
+          <p className="text-sm text-muted-foreground">
             Search for movies and TV shows to add to your watchlist.
           </p>
         </div>
@@ -31,8 +28,8 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
   const data = await searchTmdb(q, pageNum);
 
   return (
-    <div className="max-w-screen-xl mx-auto px-6 py-12">
-      <div className="max-w-2xl mx-auto mb-10">
+    <div className="max-w-screen-xl mx-auto px-6 py-8">
+      <div className="max-w-2xl mx-auto mb-8">
         <SearchBar initialValue={q} />
       </div>
       <SearchResults

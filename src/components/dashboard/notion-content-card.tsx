@@ -5,7 +5,9 @@ import Image from "next/image";
 import { Film, Tv, Trash2, Loader2 } from "lucide-react";
 import { useAction } from "next-safe-action/hooks";
 import { archiveFromWatchlistAction } from "@/actions/watchlist";
-import { cn } from "@/lib/utils";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 
 interface NotionContentCardProps {
   pageId: string;
@@ -26,7 +28,6 @@ export function NotionContentCard({
   notionUrl,
   onArchive,
 }: NotionContentCardProps) {
-  const [isHovered, setIsHovered] = useState(false);
   const [archiving, setArchiving] = useState(false);
 
   const { execute } = useAction(archiveFromWatchlistAction, {
@@ -66,87 +67,64 @@ export function NotionContentCard({
   const isTV = mediaType === "TV Show";
 
   return (
-    <div
-      className="relative cursor-pointer rounded-md border border-border bg-card transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md outline-none focus-visible:ring-2 focus-visible:ring-ring"
+    <Card
+      className="cursor-pointer hover:bg-accent/50 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-ring"
       role="button"
       tabIndex={0}
       aria-label={`Open ${title} in Notion`}
       onClick={handleCardClick}
       onKeyDown={handleKeyDown}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
     >
-      {/* Backdrop — poster as cover image */}
-      <div className="relative w-full aspect-video overflow-hidden rounded-t-md">
+      {/* Poster */}
+      <div className="relative w-full aspect-[2/3] overflow-hidden rounded-t-lg border-b border-border">
         {posterUrl ? (
           <Image
             src={posterUrl}
-            alt=""
+            alt={`${title} poster`}
             fill
             sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, 25vw"
-            className="object-cover brightness-[0.6]"
+            className="object-cover"
             aria-hidden="true"
             priority={false}
           />
         ) : (
-          <div className="absolute inset-0 bg-muted" aria-hidden="true" />
+          <div className="absolute inset-0 bg-muted flex items-center justify-center">
+            {isTV ? (
+              <Tv className="size-6 text-muted-foreground" aria-hidden="true" />
+            ) : (
+              <Film className="size-6 text-muted-foreground" aria-hidden="true" />
+            )}
+          </div>
         )}
-
-        {/* Archive button — top-right */}
-        <button
-          type="button"
-          className={cn(
-            "absolute top-2 right-2 z-10 size-7 rounded-md bg-background/80 backdrop-blur-sm border border-border flex items-center justify-center text-muted-foreground hover:text-destructive transition-colors",
-            isHovered || archiving ? "opacity-100" : "opacity-0"
-          )}
-          onClick={handleArchive}
-          disabled={archiving}
-          aria-label={`Remove ${title} from watchlist`}
-          aria-busy={archiving}
-        >
-          {archiving ? (
-            <Loader2 className="size-3 animate-spin" aria-hidden="true" />
-          ) : (
-            <Trash2 className="size-3" aria-hidden="true" />
-          )}
-        </button>
       </div>
 
-      {/* Info section */}
-      <div className="relative px-3 pb-3 pt-2">
-        {/* Floating poster — overlaps backdrop */}
-        <div className="absolute -top-10 left-3 w-20 aspect-[2/3] rounded-sm overflow-hidden shadow-xl border border-border/60 z-10">
-          {posterUrl ? (
-            <Image
-              src={posterUrl}
-              alt={`${title} poster`}
-              fill
-              sizes="160px"
-              quality={90}
-              className="object-cover"
-              priority={false}
-            />
-          ) : (
-            <div className="absolute inset-0 bg-muted flex items-center justify-center">
-              {isTV ? (
-                <Tv className="size-4 text-muted-foreground" aria-hidden="true" />
-              ) : (
-                <Film className="size-4 text-muted-foreground" aria-hidden="true" />
-              )}
-            </div>
-          )}
+      <CardContent className="p-3">
+        <div className="flex items-start justify-between gap-2">
+          <div className="min-w-0">
+            <p className="text-sm font-medium leading-snug line-clamp-2 text-foreground">
+              {title}
+            </p>
+            <Badge variant="secondary" className="mt-1.5 text-xs">
+              {isTV ? "TV Series" : "Movie"}
+            </Badge>
+          </div>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="shrink-0 size-7 text-muted-foreground hover:text-destructive"
+            onClick={handleArchive}
+            disabled={archiving}
+            aria-label={`Remove ${title} from watchlist`}
+            aria-busy={archiving}
+          >
+            {archiving ? (
+              <Loader2 className="size-3 animate-spin" aria-hidden="true" />
+            ) : (
+              <Trash2 className="size-3" aria-hidden="true" />
+            )}
+          </Button>
         </div>
-
-        {/* Text — shifted right of poster */}
-        <div className="pl-24 min-h-20">
-          <p className="text-[0.8125rem] font-semibold leading-snug line-clamp-2 text-foreground">
-            {title}
-          </p>
-          <span className="mt-0.5 inline-block text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
-            {isTV ? "TV Series" : "Film"}
-          </span>
-        </div>
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   );
 }
